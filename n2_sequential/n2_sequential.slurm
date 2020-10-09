@@ -3,10 +3,10 @@
 # nodes=min-max
 #SBATCH --nodes=1
 #SBATCH --mem=32G 
-#SBATCH --output=1node-1-cpt-1-npn-physical.out 
+#SBATCH --output=1node-1-cpt-1-npn-snowy.out 
 #SBATCH --job-name=1-cpt-1-npn 
 #SBATCH --cpus-per-task=1 
-#SBATCH --partition=physical 
+#SBATCH --partition=snowy 
 #SBATCH --ntasks-per-node=1
 # You need to load a compiler before openmpi.
 
