@@ -165,4 +165,4 @@ int main(int argc, char **argv) {
 }
 
 // g++ -std=c++14 -O3 -o n2_sequential n2_sequential.cpp
-// ./n2_sequential 10 6.67e-11 1.0 < body_10.data
+// ./n2_sequential 10 6.67e-11 1.0 < ../body_10.data

@@ -9,3 +9,8 @@ COMP90025 - Parallel and Multicore Computing - 2020S2 - Assignment3
 ## submit
 - ``` sbatch n2_sequential.slurm ```
 - ``` sbatch n2_openmp_run.slurm ```
+
+## spartan
+- ``` squeue -u xuliny ```
+- ``` scancel -u xuliny ```
+- ``` spartan-weather ```
