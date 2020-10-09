@@ -16,4 +16,4 @@ module load openmpi/3.1.4
 export OMP_NUM_THREADS=$SLURM_CPUS_PER_TASK
 
 g++ -std=c++14 -O3 -o n2_sequential n2_sequential.cpp
-./n2_sequential 10 6.67e-11 1.0 < ../body_1000.data
+./n2_sequential 10 6.67e-11 1.0 < ../body_10000.data
