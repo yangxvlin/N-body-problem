@@ -92,25 +92,25 @@ inline void calculate(int N, int T, double G, double TIME_DELTA, Body *n_bodies)
     Body n_bodies_next[N];
     #pragma omp parallel for
     for (int i = 0; i < N; ++i) {
-        n_bodies_next[i].mass = n_bodies[i].mass;
-        n_bodies_next[i].px = n_bodies[i].px;
-        n_bodies_next[i].py = n_bodies[i].py;
-        n_bodies_next[i].pz = n_bodies[i].pz;
-        n_bodies_next[i].vx = n_bodies[i].vx;
-        n_bodies_next[i].vy = n_bodies[i].vy;
-        n_bodies_next[i].vz = n_bodies[i].vz;
+        n_bodies_next[i] = n_bodies[i];
     }
 
     Force n_bodies_forces[N];
     for (int z = 0; z < T; ++z) {
-        for (int i = 0; i < N; ++i) {
-            compute_force(i, N, G, n_bodies, n_bodies_forces);
-        }
-        for (int i = 0; i < N; ++i) {
-            update_body(&(n_bodies_next[i]), N, G, TIME_DELTA, n_bodies[i], n_bodies_forces[i]);
-        }
-        for (int i = 0; i < N; i++) {
-            n_bodies[i] = n_bodies_next[i];
+        #pragma omp parallel
+        {
+            #pragma omp for
+            for (int i = 0; i < N; ++i) {
+                compute_force(i, N, G, n_bodies, n_bodies_forces);
+            }
+            #pragma omp for
+            for (int i = 0; i < N; ++i) {
+                update_body(&(n_bodies_next[i]), N, G, TIME_DELTA, n_bodies[i], n_bodies_forces[i]);
+            }
+            #pragma omp for
+            for (int i = 0; i < N; i++) {
+                n_bodies[i] = n_bodies_next[i];
+            }
         }
     }
 }

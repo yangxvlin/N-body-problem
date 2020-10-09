@@ -88,13 +88,7 @@ inline void update_body(Body * body_next, int N, double G, double TIME_DELTA, Bo
 inline void calculate(int N, int T, double G, double TIME_DELTA, Body *n_bodies) {
     Body n_bodies_next[N];
     for (int i = 0; i < N; ++i) {
-        n_bodies_next[i].mass = n_bodies[i].mass;
-        n_bodies_next[i].px = n_bodies[i].px;
-        n_bodies_next[i].py = n_bodies[i].py;
-        n_bodies_next[i].pz = n_bodies[i].pz;
-        n_bodies_next[i].vx = n_bodies[i].vx;
-        n_bodies_next[i].vy = n_bodies[i].vy;
-        n_bodies_next[i].vz = n_bodies[i].vz;
+        n_bodies_next[i] = n_bodies[i];
     }
 
     Force n_bodies_forces[N];
