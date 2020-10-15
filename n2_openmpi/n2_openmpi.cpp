@@ -67,17 +67,17 @@ inline void compute_force(int i, int N, double G, Body *n_bodies, Force * force)
     for (int j = 0; j < N; j++) {
         if (i != j) {
             // distance in x direction
-            px_diff = n_bodies[j].px - n_bodies->px;
+            px_diff = n_bodies[j].px - n_bodies[i].px;
             // distance in y direction
-            py_diff = n_bodies[j].py - n_bodies->py;
+            py_diff = n_bodies[j].py - n_bodies[i].py;
             // distance in z direction
-            pz_diff = n_bodies[j].pz - n_bodies->pz;
+            pz_diff = n_bodies[j].pz - n_bodies[i].pz;
 
             // ||p_j - p_i||
             euclidean_distance = sqrt(pow(px_diff, 2) + pow(py_diff, 2) + pow(pz_diff, 2)) + EPSILON;  // add epsilon to avoid zero division
 
             // G * m_i * m_j / (||p_j - p_i||)^3
-            factor = G * n_bodies[j].mass * n_bodies->mass / pow(euclidean_distance, 3);
+            factor = G * n_bodies[j].mass * n_bodies[i].mass / pow(euclidean_distance, 3);
             // f_ij = factor * (p_j - p_i)
             force->fx += px_diff * factor; // force in x direction
             force->fy += py_diff * factor; // force in y direction
@@ -124,26 +124,30 @@ inline void calculate(int N, int T, double G, double TIME_DELTA, Body *n_bodies)
     
     Force n_bodies_forces[N];
 
+    if (rank == root) {
+        cout << "test 0 " << rank << endl;
+    }
+
     for (int z = 0; z < T; ++z) {
         MPI_Bcast(n_bodies, N, MPI_Body, root, comm);
         for (int i = n_start; i < n_end; ++i) {
             compute_force(i, N, G, n_bodies, &(tmp_forces[i - n_start]));
         }
-        // if (rank == root) {
-        //     cout << "force computed" << endl;
-        // }
+        if (rank == root) {
+            cout << z << " force computed" << endl;
+        }
         MPI_Gather(tmp_forces,      workload, MPI_Force,
                    n_bodies_forces, N,        MPI_Force,
                    root, comm);
-        // if (rank == root) {
-        //     cout << "force gathered" << endl;
-        // }
+        if (rank == root) {
+            cout << z << " force gathered" << endl;
+        }
         for (int i = n_start; i < n_end; ++i) {
             update_body(&(tmp_n_bodies[i - n_start]), N, G, TIME_DELTA, n_bodies[i], n_bodies_forces[i]);
         }
-        // if (rank == root) {
-        //     cout << "body updated" << endl;
-        // }
+        if (rank == root) {
+            cout << z << " body updated" << endl;
+        }
         MPI_Gather(tmp_n_bodies, workload, MPI_Body,
                    n_bodies,     N,        MPI_Body,
                    root, comm);
