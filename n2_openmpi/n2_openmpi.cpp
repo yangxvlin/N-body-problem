@@ -181,7 +181,6 @@ int main(int argc, char **argv) {
         cin >> G;
         cin >> TIME_DELTA;
 
-            
         cout << N << " " << T << " " << G << " " << TIME_DELTA << endl;
 
         for (int i = 0; i < N; ++i) {
@@ -193,6 +192,8 @@ int main(int argc, char **argv) {
             cin >> n_bodies[i].vy;
             cin >> n_bodies[i].vz;
         }
+
+        rank = 0;
     }
     cout << "start3 " << rank << endl;
 
