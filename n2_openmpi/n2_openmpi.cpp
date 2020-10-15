@@ -146,6 +146,7 @@ inline void calculate(int N, int T, double G, double TIME_DELTA, Body *n_bodies)
             cout << z << " force gathered" << endl;
         }
         for (int i = n_start; i < n_end; ++i) {
+            cout << "rank[" << z << "] " << i << "and " << i - n_start << endl;
             update_body(&(tmp_n_bodies[i - n_start]), N, G, TIME_DELTA, n_bodies[i], n_bodies_forces[i]);
         }
         if (rank == root) {
