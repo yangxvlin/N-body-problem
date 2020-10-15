@@ -168,22 +168,14 @@ int main(int argc, char **argv) {
     double G;
     // time delta
     double TIME_DELTA;
-    cout << "start1a " << rank << endl; 
 
-    cout << "start1 " << rank << endl; 
     uint64_t start, end;
-    cout << "start2 " << rank << endl; 
+
     if (rank == root) {
-        cout << "start " << rank << endl;
         cin >> N;
         cin >> T;
         cin >> G;
         cin >> TIME_DELTA;
-
-        cout << N << " " << T << " " << G << " " << TIME_DELTA << endl;
-
-
-        rank = 0;
     }
 
     Body n_bodies[N];
@@ -199,13 +191,9 @@ int main(int argc, char **argv) {
         }
     }
 
-    if (rank == root) {
-        cout << "start3 " << rank << endl;
-        cout << N << " " << T << " " << G << " " << TIME_DELTA << endl;
-    }
 
     start = GetTimeStamp();
-    // calculate(N, T, G, TIME_DELTA, n_bodies);
+    calculate(N, T, G, TIME_DELTA, n_bodies);
     if (rank == root) {
         cout << "time = " << GetTimeStamp() - start << endl;
 
