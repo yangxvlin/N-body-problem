@@ -41,31 +41,31 @@ struct Force {
 
 // compute force for body i based on body j where j != i
 // i: body i
-inline void compute_force(int i, int N, double G, Body *n_bodies, Force *n_bodies_forces){
+inline void compute_force(int i, int N, double G, Body *n_bodies, Force * force){
     // reset force
-    n_bodies_forces[i].fx = 0;
-    n_bodies_forces[i].fy = 0;
-    n_bodies_forces[i].fz = 0;
+    force->fx = 0;
+    force->fy = 0;
+    force->fz = 0;
 
     double px_diff, py_diff, pz_diff, factor, euclidean_distance;
     for (int j = 0; j < N; j++) {
         if (i != j) {
             // distance in x direction
-            px_diff = n_bodies[j].px - n_bodies[i].px;
+            px_diff = n_bodies[j].px - n_bodies->px;
             // distance in y direction
-            py_diff = n_bodies[j].py - n_bodies[i].py;
+            py_diff = n_bodies[j].py - n_bodies->py;
             // distance in z direction
-            pz_diff = n_bodies[j].pz - n_bodies[i].pz;
+            pz_diff = n_bodies[j].pz - n_bodies->pz;
 
             // ||p_j - p_i||
             euclidean_distance = sqrt(pow(px_diff, 2) + pow(py_diff, 2) + pow(pz_diff, 2)) + EPSILON;  // add epsilon to avoid zero division
 
             // G * m_i * m_j / (||p_j - p_i||)^3
-            factor = G * n_bodies[j].mass * n_bodies[i].mass / pow(euclidean_distance, 3);
+            factor = G * n_bodies[j].mass * n_bodies->mass / pow(euclidean_distance, 3);
             // f_ij = factor * (p_j - p_i)
-            n_bodies_forces[i].fx += px_diff * factor; // force in x direction
-            n_bodies_forces[i].fy += py_diff * factor; // force in y direction
-            n_bodies_forces[i].fz += pz_diff * factor; // force in z direction
+            force->fx += px_diff * factor; // force in x direction
+            force->fy += py_diff * factor; // force in y direction
+            force->fz += pz_diff * factor; // force in z direction
         }
     }
 }
@@ -94,7 +94,7 @@ inline void calculate(int N, int T, double G, double TIME_DELTA, Body *n_bodies)
     Force n_bodies_forces[N];
     for (int z = 0; z < T; ++z) {
         for (int i = 0; i < N; ++i) {
-            compute_force(i, N, G, n_bodies, n_bodies_forces);
+            compute_force(i, N, G, n_bodies, &(n_bodies_forces[i]));
         }
         for (int i = 0; i < N; ++i) {
             update_body(&(n_bodies_next[i]), N, G, TIME_DELTA, n_bodies[i], n_bodies_forces[i]);
@@ -108,33 +108,22 @@ inline void calculate(int N, int T, double G, double TIME_DELTA, Body *n_bodies)
 
 int main(int argc, char **argv) {
     uint64_t start, end;
-    if (argc < 4) {
-        cout << "at least three numbers for n iterations, gravity constant and time delta" << endl;
-        return -1;
-    }
-    // n iterations
-    int T = atoi(argv[1]);
-    if (T <= 0) {
-        cout << "Input an positive iteration number" << endl;
-        return -1;
-    }
-    // grativity constant
-    double G = atoi(argv[2]);
-    if (G <= 0) {
-        cout << "Input an positive grativity constant" << endl;
-        return -1;
-    }
-
-    double TIME_DELTA = atoi(argv[3]);
-    if (TIME_DELTA <= 0) {
-        cout << "Input an positive time delta" << endl;
-        return -1;
-    }
 
     // n bodies
     int N;
+    // n iterations
+    int T;
+    // frativity const
+    double G;
+    // time delta
+    double TIME_DELTA;
     cin >> N;
+    cin >> T;
+    cin >> G;
+    cin >> TIME_DELTA;
     
+    // cout << T << " " << G << " " << TIME_DELTA << endl;
+
     Body n_bodies[N];
     for (int i = 0; i < N; ++i) {
         cin >> n_bodies[i].mass;
@@ -159,4 +148,4 @@ int main(int argc, char **argv) {
 }
 
 // g++ -std=c++14 -O3 -o n2_sequential n2_sequential.cpp
-// ./n2_sequential 10 6.67e-11 1.0 < ../body_10.data
+// ./n2_sequential < ../body_10.data

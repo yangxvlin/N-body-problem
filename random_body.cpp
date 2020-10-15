@@ -24,6 +24,12 @@ int main(int argc, char **argv){
     }
 
     cout << N << endl;
+    int T = 10 ;
+    cout << T << endl;
+    double G = 6.67e-11 ;
+    cout << G << endl;
+    double TIME_DELTA = 1.0;
+    cout << TIME_DELTA << endl;
 
     double mass, px, py, pz, vx, vy, vz;
 
