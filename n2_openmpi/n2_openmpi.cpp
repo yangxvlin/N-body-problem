@@ -126,7 +126,7 @@ inline void calculate(int N, int T, double G, double TIME_DELTA, Body *n_bodies)
         tmp_n_bodies[i - n_start] = n_bodies[i];
     }
     
-    Force n_bodies_forces = (Force *) malloc(gsize*100*sizeof(int));;
+    Force n_bodies_forces[N];
 
     if (rank == root) {
         cout << "test 0 " << rank << endl;
