@@ -148,6 +148,9 @@ inline void calculate(int N, int T, double G, double TIME_DELTA, Body *n_bodies)
         }
         for (int i = n_start; i < n_end; ++i) {
             cout << "rank[" << rank << "] " << i << " and " << i - n_start << endl;
+            cout << "rank[" << rank << "] tmp_n_bodies[i - n_start]: " << tmp_n_bodies[i - n_start] << endl;
+            cout << "rank[" << rank << "] n_bodies[i]: " << n_bodies[i] << endl;
+            cout << "rank[" << rank << "] n_bodies_forces[i]: " << n_bodies_forces[i].fx << endl;
             update_body(&(tmp_n_bodies[i - n_start]), N, G, TIME_DELTA, n_bodies[i], n_bodies_forces[i]);
         }
         if (rank == root) {
