@@ -158,8 +158,7 @@ int main(int argc, char **argv) {
     MPI_Init(&argc, &argv);
     int rank;
     MPI_Comm_rank(comm, &rank);
-    
-    cout << "start0 " << rank << endl; 
+
     // n bodies
     int N;
     // n iterations
@@ -191,7 +190,7 @@ int main(int argc, char **argv) {
         }
     }
 
-
+    cout << "start0 " << rank << endl;
     start = GetTimeStamp();
     calculate(N, T, G, TIME_DELTA, n_bodies);
     if (rank == root) {
