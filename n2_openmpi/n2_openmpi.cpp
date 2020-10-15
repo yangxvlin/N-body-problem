@@ -121,6 +121,9 @@ inline void calculate(int N, int T, double G, double TIME_DELTA, Body *n_bodies)
     int workload = n_end - n_start;
     Force tmp_forces[workload];
     Body  tmp_n_bodies[workload];
+    for (int i = n_start; i < n_end; ++i) {
+        tmp_n_bodies[i - n_start].mass = n_bodies[i].mass;
+    }
     
     Force n_bodies_forces[N];
 
