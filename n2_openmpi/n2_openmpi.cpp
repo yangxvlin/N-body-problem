@@ -195,7 +195,10 @@ int main(int argc, char **argv) {
 
         rank = 0;
     }
-    cout << "start3 " << rank << endl;
+    if (rank == root) {
+        cout << "start3 " << rank << endl;
+        cout << N << " " << T << " " << G << " " << TIME_DELTA << endl;
+    }
 
     start = GetTimeStamp();
     // calculate(N, T, G, TIME_DELTA, n_bodies);
