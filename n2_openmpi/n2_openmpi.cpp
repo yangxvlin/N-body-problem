@@ -169,7 +169,6 @@ int main(int argc, char **argv) {
     // time delta
     double TIME_DELTA;
     cout << "start1a " << rank << endl; 
-    Body n_bodies[N];
 
     cout << "start1 " << rank << endl; 
     uint64_t start, end;
@@ -183,6 +182,12 @@ int main(int argc, char **argv) {
 
         cout << N << " " << T << " " << G << " " << TIME_DELTA << endl;
 
+
+        rank = 0;
+    }
+
+    Body n_bodies[N];
+    if (rank == root) {
         for (int i = 0; i < N; ++i) {
             cin >> n_bodies[i].mass;
             cin >> n_bodies[i].px;
@@ -192,9 +197,8 @@ int main(int argc, char **argv) {
             cin >> n_bodies[i].vy;
             cin >> n_bodies[i].vz;
         }
-
-        rank = 0;
     }
+
     if (rank == root) {
         cout << "start3 " << rank << endl;
         cout << N << " " << T << " " << G << " " << TIME_DELTA << endl;
