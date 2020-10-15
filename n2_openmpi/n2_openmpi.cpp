@@ -126,7 +126,7 @@ inline void calculate(int N, int T, double G, double TIME_DELTA, Body *n_bodies)
         tmp_n_bodies[i - n_start] = n_bodies[i];
     }
     
-    Force n_bodies_forces[N];
+    Force n_bodies_forces = (Force *) malloc(gsize*100*sizeof(int));;
 
     if (rank == root) {
         cout << "test 0 " << rank << endl;
@@ -141,7 +141,7 @@ inline void calculate(int N, int T, double G, double TIME_DELTA, Body *n_bodies)
             cout << z << " force computed" << endl;
         }
         MPI_Gather(tmp_forces,      workload, MPI_Force,
-                   n_bodies_forces, N,        MPI_Force,
+                   n_bodies_forces, workload, MPI_Force,
                    root, comm);
         if (rank == root) {
             cout << z << " force gathered" << endl;
@@ -157,7 +157,7 @@ inline void calculate(int N, int T, double G, double TIME_DELTA, Body *n_bodies)
             cout << z << " body updated" << endl;
         }
         MPI_Gather(tmp_n_bodies, workload, MPI_Body,
-                   n_bodies,     N,        MPI_Body,
+                   n_bodies,     workload, MPI_Body,
                    root, comm);
         if (rank == root) {
             cout << z << " iter finished" << endl;
