@@ -164,7 +164,7 @@ inline void calculate(int N, int T, double G, double TIME_DELTA, Body *n_bodies)
         }
 
         int tmp = 0, cur_thread_rank = 0;
-        for (int i = n_start; i < n_end; ++i) {
+        for (int i = 0; i < n_end - n_start; ++i) {
             tmp_forces[i] = tmp_forces_buffer[cur_thread_rank][i];
             ++tmp;
             if (tmp == n_per_thread) {
