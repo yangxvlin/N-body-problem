@@ -169,6 +169,7 @@ inline void calculate(int N, int T, double G, double TIME_DELTA, Body *n_bodies)
             ++tmp;
             if (tmp == n_per_thread) {
                 ++cur_thread_rank;
+                tmp = 0;
             }
         }
 
