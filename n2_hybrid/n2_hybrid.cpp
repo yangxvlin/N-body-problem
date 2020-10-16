@@ -139,6 +139,7 @@ inline void calculate(int N, int T, double G, double TIME_DELTA, Body *n_bodies)
     MPI_Bcast(n_nodies_padded, N, MPI_Body, root, comm);
 
     int n_threads = omp_get_max_threads();
+    int n_per_thread = (int) ceil((1.0 * n_per_rank) / n_threads);
     omp_set_num_threads(n_threads);
     #pragma omp parallel
     {
@@ -147,16 +148,30 @@ inline void calculate(int N, int T, double G, double TIME_DELTA, Body *n_bodies)
         }
     }
 
+    Force tmp_forces_buffer[n_threads][n_per_rank];
+
     for (int z = 0; z < T; ++z) {
         // #pragma omp parallel for
         for (int i = n_start; i < n_end; ++i) {
             tmp_n_bodies[i - n_start] = n_nodies_padded[i];
         }
 
-        #pragma omp parallel for
+        #pragma omp parallel for schedule(n_per_thread, static)
         for (int i = n_start; i < n_end; ++i) {
-            compute_force(i, N, G, n_nodies_padded, &(tmp_forces[i - n_start]));
+            int thread_rank = omp_get_thread_num();
+            // compute_force(i, N, G, n_nodies_padded, &(tmp_forces[i - n_start]));
+            compute_force(i, N, G, n_nodies_padded, &(tmp_forces_buffer[thread_rank][i - n_start]));
         }
+
+        int tmp = 0, cur_thread_rank = 0;
+        for (int i = n_start; i < n_end; ++i) {
+            tmp_forces[i] = tmp_forces_buffer[cur_thread_rank][i];
+            ++tmp;
+            if (tmp == n_per_thread) {
+                ++cur_thread_rank;
+            }
+        }
+
         // if (rank == root) {
         //     cout << z << " force computed" << endl;
         // }
