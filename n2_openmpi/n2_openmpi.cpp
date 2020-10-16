@@ -121,7 +121,7 @@ inline void calculate(int N, int T, double G, double TIME_DELTA, Body *n_bodies)
     int workload = n_end - n_start;
     Force tmp_forces[n_per_rank];
     Body  tmp_n_bodies[n_per_rank];
-    cout << "rank[" << rank << "] workload=" << workload << endl;
+    // cout << "rank[" << rank << "] workload=" << workload << endl;
     
     Force n_bodies_forces[n_per_rank * size];
     Body  n_nodies_padded[n_per_rank * size];
@@ -131,9 +131,9 @@ inline void calculate(int N, int T, double G, double TIME_DELTA, Body *n_bodies)
         }
     }
 
-    if (rank == root) {
-        cout << "test 0 " << rank << endl;
-    }
+    // if (rank == root) {
+    //     cout << "test 0 " << rank << endl;
+    // }
 
     MPI_Bcast(n_nodies_padded, N, MPI_Body, root, comm);
 
@@ -145,32 +145,32 @@ inline void calculate(int N, int T, double G, double TIME_DELTA, Body *n_bodies)
         for (int i = n_start; i < n_end; ++i) {
             compute_force(i, N, G, n_nodies_padded, &(tmp_forces[i - n_start]));
         }
-        if (rank == root) {
-            cout << z << " force computed" << endl;
-        }
+        // if (rank == root) {
+        //     cout << z << " force computed" << endl;
+        // }
         MPI_Allgather(tmp_forces,      n_per_rank, MPI_Force,
                       n_bodies_forces, n_per_rank, MPI_Force,
                       comm);
-        if (rank == root) {
-            cout << z << " force gathered" << endl;
-        }
+        // if (rank == root) {
+        //     cout << z << " force gathered" << endl;
+        // }
         for (int i = n_start; i < n_end; ++i) {
-            cout << "rank[" << rank << "] " << i << " and " << i - n_start << endl;
-            cout << "rank[" << rank << "] tmp_n_bodies[i - n_start]: " << tmp_n_bodies[i - n_start].mass << endl;
+            // cout << "rank[" << rank << "] " << i << " and " << i - n_start << endl;
+            // cout << "rank[" << rank << "] tmp_n_bodies[i - n_start]: " << tmp_n_bodies[i - n_start].mass << endl;
             // cout << "rank[" << rank << "] n_bodies[i]: " << n_bodies[i] << endl;
             // cout << "rank[" << rank << "] n_bodies_forces[i]: " << n_bodies_forces[i].fx << endl;
             update_body(&(tmp_n_bodies[i - n_start]), N, G, TIME_DELTA, n_nodies_padded[i], n_bodies_forces[i]);
         }
-        if (rank == root) {
-            cout << z << " body updated" << endl;
-        }
+        // if (rank == root) {
+        //     cout << z << " body updated" << endl;
+        // }
         MPI_Allgather(tmp_n_bodies,    n_per_rank, MPI_Body,
                       n_nodies_padded, n_per_rank, MPI_Body,
                       comm);
-        if (rank == root) {
-            cout << z << " iter finished" << endl;
-            // cout << "0: " << n_bodies[0] << endl;
-        }
+        // if (rank == root) {
+        //     cout << z << " iter finished" << endl;
+        //     // cout << "0: " << n_bodies[0] << endl;
+        // }
     }
 
     if (rank == root) {
@@ -216,7 +216,7 @@ int main(int argc, char **argv) {
         }
     }
 
-    cout << "start0 " << rank << endl;
+    // cout << "start0 " << rank << endl;
     start = GetTimeStamp();
     calculate(N, T, G, TIME_DELTA, n_bodies);
     if (rank == root) {
