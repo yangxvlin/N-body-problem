@@ -142,11 +142,12 @@ inline void calculate(int N, int T, double G, double TIME_DELTA, Body *n_bodies)
     omp_set_num_threads(n_threads);
 
     for (int z = 0; z < T; ++z) {
-        #pragma omp parallel for
+        // #pragma omp parallel for
         for (int i = n_start; i < n_end; ++i) {
             tmp_n_bodies[i - n_start] = n_nodies_padded[i];
         }
 
+        #pragma omp parallel for
         for (int i = n_start; i < n_end; ++i) {
             compute_force(i, N, G, n_nodies_padded, &(tmp_forces[i - n_start]));
         }
