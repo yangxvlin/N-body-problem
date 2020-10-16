@@ -138,7 +138,8 @@ inline void calculate(int N, int T, double G, double TIME_DELTA, Body *n_bodies)
 
     MPI_Bcast(n_nodies_padded, N, MPI_Body, root, comm);
 
-    int n_threads = omp_get_num_threads();
+    int n_threads = omp_get_max_threads();
+    omp_set_num_threads(n_threads);
 
     for (int z = 0; z < T; ++z) {
         #pragma omp parallel for
