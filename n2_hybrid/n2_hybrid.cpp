@@ -190,7 +190,7 @@ int main(int argc, char **argv) {
     #pragma omp parallel
     {
         if (omp_get_thread_num() == 0) {
-            cout << "#threads used = " << n_threads << end;
+            cout << "#threads used = " << n_threads << endl;
         }
     }
 
