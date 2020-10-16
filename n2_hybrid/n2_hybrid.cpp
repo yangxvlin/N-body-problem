@@ -153,8 +153,7 @@ inline void calculate(int N, int T, double G, double TIME_DELTA, Body *n_bodies)
     //         cout << "#threads used = " << omp_get_num_threads() << endl;
     //     }
     // }
-
-    Force tmp_forces_buffer[n_threads][n_per_rank];
+    // Force tmp_forces_buffer[n_threads][n_per_rank];
 
     for (int z = 0; z < T; ++z) {
         // #pragma omp parallel for
