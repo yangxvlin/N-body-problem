@@ -65,6 +65,12 @@ inline void compute_force(int i, int N, double G, Body *n_bodies, Force * force)
     force->fz = 0;
 
     double px_diff, py_diff, pz_diff, factor, euclidean_distance;
+
+    int n_threads = omp_get_max_threads();
+    // int n_per_thread = (int) ceil((1.0 * n_per_rank) / n_threads);
+    omp_set_num_threads(n_threads);
+
+    #pragma omp prallel for
     for (int j = 0; j < N; j++) {
         if (i != j) {
             // distance in x direction
@@ -138,15 +144,15 @@ inline void calculate(int N, int T, double G, double TIME_DELTA, Body *n_bodies)
 
     MPI_Bcast(n_nodies_padded, N, MPI_Body, root, comm);
 
-    int n_threads = omp_get_max_threads();
-    int n_per_thread = (int) ceil((1.0 * n_per_rank) / n_threads);
-    omp_set_num_threads(n_threads);
-    #pragma omp parallel
-    {
-        if (omp_get_thread_num() == 0) {
-            cout << "#threads used = " << omp_get_num_threads() << endl;
-        }
-    }
+    // int n_threads = omp_get_max_threads();
+    // // int n_per_thread = (int) ceil((1.0 * n_per_rank) / n_threads);
+    // omp_set_num_threads(n_threads);
+    // #pragma omp parallel
+    // {
+    //     if (omp_get_thread_num() == 0) {
+    //         cout << "#threads used = " << omp_get_num_threads() << endl;
+    //     }
+    // }
 
     Force tmp_forces_buffer[n_threads][n_per_rank];
 
@@ -204,7 +210,7 @@ inline void calculate(int N, int T, double G, double TIME_DELTA, Body *n_bodies)
     }
 
     if (rank == root) {
-        #pragma omp parallel for
+        // #pragma omp parallel for
         for (int i = 0; i < N; ++i) {
             n_bodies[i] = n_nodies_padded[i];
         }
