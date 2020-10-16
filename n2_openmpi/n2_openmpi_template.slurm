@@ -11,4 +11,5 @@ module load openmpi/3.1.4
 export OMP_NUM_THREADS=$SLURM_CPUS_PER_TASK
 
 mpicxx -std=c++14 -O3 -o n2_openmpi n2_openmpi.cpp
-mpirun n2_openmpi < ../body_10.data
+# mpirun n2_openmpi < ../body_10.data
+mpirun n2_openmpi < ../body_10000.data
