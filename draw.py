@@ -25,7 +25,7 @@ def draw_speedup(sequential_path: str,
     print(speedup)
 
     plt.figure()
-    plt.plot(parallel_outputs, speedup)
+    plt.plot(parallel_outputs, speedup, 'bo-')
     plt.xlabel(xlabel)
     plt.ylabel(ylabel)
     plt.title(title)
@@ -35,7 +35,7 @@ if __name__ == "__main__":
     draw_speedup("./n2_sequential/1node-1-cpt-1-npn-snowy.out",
                  "./n2_openmpi/",
                  "node-1-cpt-1-npn-snowy.out",
-                 [i for i in range(2, 12)],
+                 [i for i in range(2, 13)],
                  title="Speed of MPI O(n^2)",
                  xlabel="n nodes",
                  ylabel="speedup"
