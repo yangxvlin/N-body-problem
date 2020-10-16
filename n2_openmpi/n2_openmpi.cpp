@@ -119,49 +119,62 @@ inline void calculate(int N, int T, double G, double TIME_DELTA, Body *n_bodies)
     int n_start = rank * n_per_rank;
     int n_end   = min(N, (rank+1) * n_per_rank);
     int workload = n_end - n_start;
-    Force tmp_forces[workload];
-    Body  tmp_n_bodies[workload];
+    Force tmp_forces[n_per_rank];
+    Body  tmp_n_bodies[n_per_rank];
     cout << "rank[" << rank << "] workload=" << workload << endl;
-    for (int i = n_start; i < n_end; ++i) {
-        tmp_n_bodies[i - n_start] = n_bodies[i];
-    }
     
-    Force n_bodies_forces[N];
+    Force n_bodies_forces[n_per_rank * size];
+    Body  n_nodies_padded[n_per_rank * size];
+    if (rank == root) {
+        for (int i = 0; i < N; ++i) {
+            n_nodies_padded[i] = n_bodies[i];
+        }
+    }
 
     if (rank == root) {
         cout << "test 0 " << rank << endl;
     }
 
-    MPI_Bcast(n_bodies, N, MPI_Body, root, comm);
+    MPI_Bcast(n_nodies_padded, N, MPI_Body, root, comm);
+    for (int i = n_start; i < n_end; ++i) {
+        tmp_n_bodies[i - n_start] = n_bodies[i];
+    }
+
     for (int z = 0; z < T; ++z) {
         for (int i = n_start; i < n_end; ++i) {
-            compute_force(i, N, G, n_bodies, &(tmp_forces[i - n_start]));
+            compute_force(i, N, G, n_nodies_padded, &(tmp_forces[i - n_start]));
         }
         if (rank == root) {
             cout << z << " force computed" << endl;
         }
-        MPI_Allgather(tmp_forces,      workload, MPI_Force,
-                      n_bodies_forces, workload, MPI_Force,
+        MPI_Allgather(tmp_forces,      n_per_rank, MPI_Force,
+                      n_bodies_forces, n_per_rank, MPI_Force,
                       comm);
         if (rank == root) {
             cout << z << " force gathered" << endl;
         }
         for (int i = n_start; i < n_end; ++i) {
             cout << "rank[" << rank << "] " << i << " and " << i - n_start << endl;
-            cout << "rank[" << rank << "] tmp_n_bodies[i - n_start]: " << tmp_n_bodies[i - n_start] << endl;
-            cout << "rank[" << rank << "] n_bodies[i]: " << n_bodies[i] << endl;
-            cout << "rank[" << rank << "] n_bodies_forces[i]: " << n_bodies_forces[i].fx << endl;
+            // cout << "rank[" << rank << "] tmp_n_bodies[i - n_start]: " << tmp_n_bodies[i - n_start] << endl;
+            // cout << "rank[" << rank << "] n_bodies[i]: " << n_bodies[i] << endl;
+            // cout << "rank[" << rank << "] n_bodies_forces[i]: " << n_bodies_forces[i].fx << endl;
             update_body(&(tmp_n_bodies[i - n_start]), N, G, TIME_DELTA, n_bodies[i], n_bodies_forces[i]);
         }
         if (rank == root) {
             cout << z << " body updated" << endl;
         }
-        MPI_Allgather(tmp_n_bodies, workload, MPI_Body,
-                      n_bodies,     workload, MPI_Body,
+        MPI_Allgather(tmp_n_bodies,    n_per_rank, MPI_Body,
+                      n_nodies_padded, n_per_rank, MPI_Body,
                       comm);
         if (rank == root) {
             cout << z << " iter finished" << endl;
             // cout << "0: " << n_bodies[0] << endl;
+        }
+    }
+
+    if (rank == root) {
+        for (int i = 0; i < N; ++i) {
+            n_bodies[i] = n_nodies_padded[i];
         }
     }
 }
