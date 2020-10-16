@@ -156,7 +156,7 @@ inline void calculate(int N, int T, double G, double TIME_DELTA, Body *n_bodies)
             tmp_n_bodies[i - n_start] = n_nodies_padded[i];
         }
 
-        #pragma omp parallel for schedule(n_per_thread, static)
+        #pragma omp parallel for schedule(static, n_per_thread)
         for (int i = n_start; i < n_end; ++i) {
             int thread_rank = omp_get_thread_num();
             // compute_force(i, N, G, n_nodies_padded, &(tmp_forces[i - n_start]));
