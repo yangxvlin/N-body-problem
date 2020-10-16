@@ -188,12 +188,12 @@ inline void calculate(int N, int T, double G, double TIME_DELTA, Body *n_bodies)
 int main(int argc, char **argv) {
     int n_threads = omp_get_max_threads();
     omp_set_num_threads(n_threads);
-    #pragma omp parallel
-    {
-        if (omp_get_thread_num() == 0) {
-            cout << "#threads used = " << n_threads << endl;
-        }
-    }
+    // #pragma omp parallel
+    // {
+    //     if (omp_get_thread_num() == 0) {
+    //         cout << "#threads used = " << n_threads << endl;
+    //     }
+    // }
 
     MPI_Init(&argc, &argv);
     int rank;
