@@ -74,7 +74,7 @@ inline void compute_force(int i, int N, double G, Body *n_bodies, Force * force)
             pz_diff = n_bodies[j].pz - n_bodies[i].pz;
 
             // ||p_j - p_i||
-            euclidean_distance = sqrt(pow(px_diff, 2) + pow(py_diff, 2) + pow(pz_diff, 2));  // add epsilon to avoid zero division
+            euclidean_distance = sqrt(pow(px_diff, 2) + pow(py_diff, 2) + pow(pz_diff, 2));
 
             // G * m_i * m_j / (||p_j - p_i||)^3
             factor = G * n_bodies[j].mass * n_bodies[i].mass / (pow(euclidean_distance, 3) + EPSILON); // + epsilon to avoid zero division
@@ -136,11 +136,12 @@ inline void calculate(int N, int T, double G, double TIME_DELTA, Body *n_bodies)
     }
 
     MPI_Bcast(n_nodies_padded, N, MPI_Body, root, comm);
-    for (int i = n_start; i < n_end; ++i) {
-        tmp_n_bodies[i - n_start] = n_bodies[i];
-    }
 
     for (int z = 0; z < T; ++z) {
+        for (int i = n_start; i < n_end; ++i) {
+            tmp_n_bodies[i - n_start] = n_nodies_padded[i];
+        }
+
         for (int i = n_start; i < n_end; ++i) {
             compute_force(i, N, G, n_nodies_padded, &(tmp_forces[i - n_start]));
         }
