@@ -151,14 +151,14 @@ inline void calculate(int N, int T, double G, double TIME_DELTA, Body *n_bodies)
     Force tmp_forces_buffer[n_threads][n_per_rank];
 
     for (int z = 0; z < T; ++z) {
-        #pragma omp parallel for
+        // #pragma omp parallel for
         // #pragma omp parallel for
         for (int i = n_start; i < n_end; ++i) {
             tmp_n_bodies[i - n_start] = n_nodies_padded[i];
         }
 
         // #pragma omp parallel for schedule(static, n_per_thread)
-        #pragma omp parallel for
+        // #pragma omp parallel for
         for (int i = n_start; i < n_end; ++i) {
             int thread_rank = omp_get_thread_num();
             compute_force(i, N, G, n_nodies_padded, &(tmp_forces[i - n_start]));
@@ -183,7 +183,7 @@ inline void calculate(int N, int T, double G, double TIME_DELTA, Body *n_bodies)
         // if (rank == root) {
         //     cout << z << " force gathered" << endl;
         // }
-        #pragma omp parallel for
+        // #pragma omp parallel for
         for (int i = n_start; i < n_end; ++i) {
             // cout << "rank[" << rank << "] " << i << " and " << i - n_start << endl;
             // cout << "rank[" << rank << "] tmp_n_bodies[i - n_start]: " << tmp_n_bodies[i - n_start].mass << endl;
@@ -204,6 +204,7 @@ inline void calculate(int N, int T, double G, double TIME_DELTA, Body *n_bodies)
     }
 
     if (rank == root) {
+        #pragma omp parallel for
         for (int i = 0; i < N; ++i) {
             n_bodies[i] = n_nodies_padded[i];
         }
