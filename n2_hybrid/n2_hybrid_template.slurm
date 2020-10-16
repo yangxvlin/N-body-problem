@@ -10,6 +10,6 @@ module load openmpi/3.1.4
 
 export OMP_NUM_THREADS=$SLURM_CPUS_PER_TASK
 
-mpicxx -std=c++14 -O3 -o n2_hybrid n2_hybrid.cpp
+mpicxx -std=c++14 -fopenmp -O3 -o n2_hybrid n2_hybrid.cpp
 # mpirun n2_hybrid < ../body_10.data
 mpirun n2_hybrid < ../body_10000.data
