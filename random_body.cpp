@@ -49,3 +49,6 @@ int main(int argc, char **argv){
 
 // g++ -std=c++14 -o random_body random_body.cpp
 // ./random_body 10 > body_10.data
+// ./random_body 1000 > body_1000.data
+// ./random_body 10000 > body_10000.data
+// ./random_body 100000 > body_100000.data
