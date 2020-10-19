@@ -9,6 +9,10 @@
 
 using namespace std;
 
+constexpr double X_BOUND = 1.0e6;      // Width of space
+constexpr double Y_BOUND = 1.0e6;      // Height of space
+constexpr double Z_BOUND = 1.0e6;      // Depth of space
+
 double rand_double( double low, double high ) {
     return ( ( double )rand() * ( high - low ) ) / ( double )RAND_MAX + low;
 }
