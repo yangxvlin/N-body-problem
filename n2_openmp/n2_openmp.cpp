@@ -26,6 +26,9 @@ uint64_t GetTimeStamp() {
 }
 
 constexpr double EPSILON = 0.000001;
+constexpr double X_BOUND = 1.0e6;      // Width of space
+constexpr double Y_BOUND = 1.0e6;      // Height of space
+constexpr double Z_BOUND = 1.0e6;      // Depth of space
 constexpr int N_THREADS = 16;
 
 // Body related calculation
@@ -86,6 +89,29 @@ inline void update_body(Body * body_next, int N, double G, double TIME_DELTA, Bo
     body_next->vx += factor * body_force.fx;
     body_next->vy += factor * body_force.fy;
     body_next->vz += factor * body_force.fz;
+
+    // wrap the position if out of bound
+    if (body_next->px >= X_BOUND) {
+        body_next->px = fmod(body_next->px, X_BOUND);
+    } else if (body_next->px <= 0) {
+        while (body_next->px < 0) {
+            body_next->px += X_BOUND;
+        }
+    }
+    if (body_next->py >= Y_BOUND) {
+        body_next->py = fmod(body_next->py, Y_BOUND);
+    } else if (body_next->py <= 0) {
+        while (body_next->py < 0) {
+            body_next->py += Y_BOUND;
+        }
+    }
+    if (body_next->pz >= Z_BOUND) {
+        body_next->pz = fmod(body_next->pz, Z_BOUND);
+    } else if (body_next->pz <= 0) {
+        while (body_next->pz < 0) {
+            body_next->pz += Z_BOUND;
+        }
+    }
 }
 
 inline void calculate(int N, int T, double G, double TIME_DELTA, Body *n_bodies) {

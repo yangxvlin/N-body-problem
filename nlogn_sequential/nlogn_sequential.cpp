@@ -27,6 +27,7 @@ constexpr double EPSILON = 0.000001;
 constexpr double X_BOUND = 1.0e6;      // Width of space
 constexpr double Y_BOUND = 1.0e6;      // Height of space
 constexpr double Z_BOUND = 1.0e6;      // Depth of space
+constexpr double THETA   = 1.0;        // Opening angle, for approximation in Barned hut algorithm
 
 // Body related calculation
 struct Body {
@@ -42,35 +43,291 @@ struct Force {
     double fx, fy, fz;
 };
 
+// **************************************************************************
+// octtree data structure and helper methods starts
+// **************************************************************************
+/* Cubic cell representing tree node in Barnes-Hut algorithm */
+typedef struct Cell  {
+   int index;                   // Index into arrays to identify particle's 
+                                // position and mass
+   int n_children;              // Indicate whether cell is leaf or has 8 children
+   Body center;                 // center of approximate body
+                                //  - Mass of particle of total mass of subtree
+                                //  - position of cell(cube) in space
+                                //  - position of center of mass of cell
+   double width, height, depth; // Width, Height, and Depth of cell
+   struct Cell* children[8];    // Pointers to child nodes
+} Cell;
+
+/* Creates a cell to be used in the octtree */
+Cell* create_cell(double width, double height, double depth) {
+   Cell* cell = (Cell*) malloc(sizeof(Cell));
+   cell->index = -1;
+   cell->n_children = 0;
+   
+   (cell->center).mass = 0;
+   (cell->center).px   = 0;
+   (cell->center).py   = 0;
+   (cell->center).pz   = 0;
+   (cell->center).vx   = 0;
+   (cell->center).vy   = 0;
+   (cell->center).vz   = 0;
+
+   cell->width = width;
+   cell->height = height;
+   cell->depth = depth;   
+   
+   return cell;
+}
+
+/* sets the location of the children relative to the current cell */
+void set_location_of_children(Cell* cell, double width, double heigth, double depth){
+   // Set location of new cells
+   ((cell->children[0])->center).px = (cell->center).px;
+   ((cell->children[0])->center).py = (cell->center).py;
+   ((cell->children[0])->center).pz = (cell->center).pz;
+
+   ((cell->children[1])->center).px = (cell->center).px + width;
+   ((cell->children[1])->center).py = (cell->center).py;
+   ((cell->children[1])->center).pz = (cell->center).pz;
+
+   ((cell->children[2])->center).px = (cell->center).px + width;
+   ((cell->children[2])->center).py = (cell->center).py;
+   ((cell->children[2])->center).pz = (cell->center).pz + depth;
+
+   ((cell->children[3])->center).px = (cell->center).px;
+   ((cell->children[3])->center).py = (cell->center).py;
+   ((cell->children[3])->center).pz = (cell->center).pz + depth;
+
+   ((cell->children[4])->center).px = (cell->center).px;
+   ((cell->children[4])->center).py = (cell->center).py + heigth;
+   ((cell->children[4])->center).pz = (cell->center).pz;
+
+   ((cell->children[5])->center).px = (cell->center).px + width;
+   ((cell->children[5])->center).py = (cell->center).py + heigth;
+   ((cell->children[5])->center).pz = (cell->center).pz;
+
+   ((cell->children[6])->center).px = (cell->center).px + width;   // Coordinates of this cell marks
+   ((cell->children[6])->center).py = (cell->center).py + heigth;  // the mid-point of the parent cell
+   ((cell->children[6])->center).pz = (cell->center).pz + depth;   //
+   
+   ((cell->children[7])->center).px = (cell->center).px;
+   ((cell->children[7])->center).py = (cell->center).py + heigth;
+   ((cell->children[7])->center).pz = (cell->center).pz + depth;
+}
+
+/*
+ * Generates new children for the current cell, forming a subtree. 
+ * The current cell will no longer be a leaf
+ */
+void generate_children(Cell* cell) {
+   // Calculate subcell dimensions
+   double width  = cell->width / 2.0;
+   double height = cell->height / 2.0;
+   double depth  = cell->depth / 2.0;
+
+   // Cell no longer a leaf
+   cell->n_children = 8;   
+   
+   // Create and initialize new children   
+   for (int i = 0; i < cell->n_children; ++i) {
+      cell->children[i] = create_cell(width, height, depth);
+   }
+   
+   set_location_of_children(cell, width, height, depth);   
+}
+
+/* Locates the child to which the particle must be added */
+int locate_child(Cell* cell, Body body) {
+    // Determine which child to add the body to
+    if (body.px > (cell->children[6])->center.px) {
+        if (body.py > (cell->children[6])->center.py) {
+            if (body.pz > (cell->children[6])->center.pz) {
+                return 6;
+            } else {
+                return 5;
+            }
+        } else {
+            if (body.pz > (cell->children[6])->center.pz) {
+                return 2;
+            } else {
+                return 1;
+            }
+        }
+    } else {
+        if (body.py > (cell->children[6])->center.py) {
+            if (body.pz > (cell->children[6])->center.pz) {
+                return 7;
+            } else {
+                return 4;
+            }
+        } else {
+            if (body.pz > (cell->children[6])->center.pz) {
+                return 3;
+            } else {
+                return 0;
+            }
+        }
+    }
+}
+
+/* Added a particle to the cell. If a particle already
+ * exists, the cube/cell is sub-divided adding the existing
+ * and new particle to the sub cells
+ */
+void add_to_cell(Cell* cell, Body* n_bodies, int i) {
+    if (cell->index == -1) {         
+        cell->index = i;
+        return;         
+    }
+         
+   generate_children(cell);
+
+   // The current cell's body must now be re-added to one of its children
+   int sc1 = locate_child(cell, n_bodies[cell->index]);
+   cell->children[sc1]->index = cell->index;   
+
+   // Locate child for new body
+   int sc2 = locate_child(cell, n_bodies[i]);
+
+    if (sc1 == sc2) {
+        add_to_cell(cell->children[sc1], n_bodies, i);
+    } else {
+        cell->children[sc2]->index = i;  
+    }
+}
+
+/* Generates the octtree for the entire system of particles */
+Cell* generate_octtree(int N, Body* n_bodies) {
+    // Initialize root of octtree
+    Cell* root_cell = create_cell(X_BOUND, Y_BOUND, Z_BOUND);
+    root_cell->index = 0;
+    // cout << root_cell->n_children << endl;
+
+    for (int i = 1; i < N; ++i) {
+        Cell* cell = root_cell;
+
+        // Find which node to add the body to
+        while (cell->n_children != 0) {
+            int sc = locate_child(cell, n_bodies[i]);
+            cell = cell->children[sc];
+        }
+
+        add_to_cell(cell, n_bodies, i);
+    }
+    return root_cell;
+}
+
+/* Deletes the octtree */
+void delete_octtree(Cell* cell) {
+    if (cell->n_children == 0) {
+        free(cell);
+        return;
+    }
+
+    for (int i = 0; i < cell->n_children; ++i) {
+        delete_octtree(cell->children[i]);
+    }
+
+    free(cell);
+}
+
+/* Computes the total mass and the center of mass of the current cell */
+Cell* compute_cell_properties(Cell* cell, Body* n_bodies) {
+    if (cell->n_children == 0) {
+        if (cell->index != -1) {
+            cell->center = n_bodies[cell->index];
+            return cell;
+        }
+    } else {      
+        double tx = 0, ty = 0, tz = 0;
+        for (int i = 0; i < cell->n_children; ++i) {
+            Cell* child = compute_cell_properties(cell->children[i], n_bodies);
+            if (child != NULL) {
+                (cell->center).mass += (child->center).mass;
+                tx += n_bodies[child->index].px * (child->center).mass;
+                ty += n_bodies[child->index].py * (child->center).mass;
+                tz += n_bodies[child->index].pz * (child->center).mass;            
+            }
+        }
+        
+        // Compute center of mass
+        (cell->center).px = tx / (cell->center).mass;
+        (cell->center).py = ty / (cell->center).mass;
+        (cell->center).pz = tz / (cell->center).mass;
+
+        return cell;
+    }
+    return NULL;
+}
+
+inline double compute_distance(Body body_i, Body body_j) {
+    double px_diff, py_diff, pz_diff;
+    // distance in x direction
+    px_diff = body_j.px - body_i.px;
+    // distance in y direction
+    py_diff = body_j.py - body_i.py;
+    // distance in z direction
+    pz_diff = body_j.pz - body_i.pz;
+
+    // ||p_j - p_i||
+    return sqrt(pow(px_diff, 2) + pow(py_diff, 2) + pow(pz_diff, 2));  // add epsilon to avoid zero division
+}
+
+/* Computes the force experienced between a particle and a cell */
+void compute_force_from_cell(Cell* cell, int index, Body * n_bodies, double G, Force * force) {
+    double d = compute_distance(n_bodies[index], cell->center);
+
+    // Compute grativational force according to Newtonian's law
+    double f = (G * (n_bodies[index].mass * n_bodies[cell->index].mass) / (pow(d, 3)));
+
+    // Resolve forces in each direction
+    force->fx += f * ((n_bodies[cell->index].px - n_bodies[index].px));
+    force->fy += f * ((n_bodies[cell->index].py - n_bodies[index].py));
+    force->fz += f * ((n_bodies[cell->index].pz - n_bodies[index].pz));      
+}
+
+/* Computes the force between the particles in the system, 
+ * using the clustering-approximation for long distant forces
+ */
+void compute_force_from_octtree(Cell* cell, int index, Body * n_bodies, double G, Force * force) {
+    // cout << "compute_force_from_octtree " << cell->n_children << endl;
+    if (cell->n_children == 0) {
+        // cout << "compute_force_from_octtree if" << endl;
+        if (cell->index != -1 && cell->index != index) {
+            // cout << "computing force" << endl;
+            compute_force_from_cell(cell, index, n_bodies, G, force);
+        }
+    } else {
+        // cout << "compute_force_from_octtree else" << endl;
+        double d = compute_distance(n_bodies[index], cell->center);
+        
+        if (THETA > (cell->width / d)){ 
+            // Use approximation
+            // cout << "computing force" << endl;
+            compute_force_from_cell(cell, index, n_bodies, G, force);         
+        } else {
+            for (int i = 0; i < cell->n_children; ++i) {
+                // cout << "computing force" << endl;
+                compute_force_from_octtree(cell->children[i], index, n_bodies, G, force);
+            }
+        }      
+    }
+}
+
+// **************************************************************************
+// octtree data structure and helper methods ends
+// **************************************************************************
+
 // compute force for body i based on body j where j != i
 // i: body i
-inline void compute_force(int i, int N, double G, Body *n_bodies, Force * force){
+inline void compute_force(int i, int N, double G, Body *n_bodies, Force * force, Cell* cell){
     // reset force
     force->fx = 0;
     force->fy = 0;
     force->fz = 0;
 
-    double px_diff, py_diff, pz_diff, factor, euclidean_distance;
-    for (int j = 0; j < N; j++) {
-        if (i != j) {
-            // distance in x direction
-            px_diff = n_bodies[j].px - n_bodies->px;
-            // distance in y direction
-            py_diff = n_bodies[j].py - n_bodies->py;
-            // distance in z direction
-            pz_diff = n_bodies[j].pz - n_bodies->pz;
-
-            // ||p_j - p_i||
-            euclidean_distance = sqrt(pow(px_diff, 2) + pow(py_diff, 2) + pow(pz_diff, 2));  // add epsilon to avoid zero division
-
-            // G * m_i * m_j / (||p_j - p_i||)^3
-            factor = G * n_bodies[j].mass * n_bodies[i].mass / (pow(euclidean_distance, 3) + EPSILON); // + epsilon to avoid zero division
-            // f_ij = factor * (p_j - p_i)
-            force->fx += px_diff * factor; // force in x direction
-            force->fy += py_diff * factor; // force in y direction
-            force->fz += pz_diff * factor; // force in z direction
-        }
-    }
+    compute_force_from_octtree(cell, i, n_bodies, G, force);
 }
 
 // update position and velocity of a body
@@ -87,14 +344,27 @@ inline void update_body(Body * body_next, int N, double G, double TIME_DELTA, Bo
     body_next->vy += factor * body_force.fy;
     body_next->vz += factor * body_force.fz;
 
-    // Check if particles attempt to cross boundary
-    // if so, by the law of conservation of momentum, reverse the velocity
-    if ((body_next->px >= X_BOUND) || (body_next->px <= 0)) {
-        body_next->vx *= -1;
-    } else if ((body_next->py >= Y_BOUND) || (body_next->py <= 0)) {
-        body_next->vy *= -1;
-    } else if ((body_next->pz >= Z_BOUND) || (body_next->pz <= 0)) {
-        body_next->vz *= -1;
+    // wrap the position if out of bound
+    if (body_next->px >= X_BOUND) {
+        body_next->px = fmod(body_next->px, X_BOUND);
+    } else if (body_next->px <= 0) {
+        while (body_next->px < 0) {
+            body_next->px += X_BOUND;
+        }
+    }
+    if (body_next->py >= Y_BOUND) {
+        body_next->py = fmod(body_next->py, Y_BOUND);
+    } else if (body_next->py <= 0) {
+        while (body_next->py < 0) {
+            body_next->py += Y_BOUND;
+        }
+    }
+    if (body_next->pz >= Z_BOUND) {
+        body_next->pz = fmod(body_next->pz, Z_BOUND);
+    } else if (body_next->pz <= 0) {
+        while (body_next->pz < 0) {
+            body_next->pz += Z_BOUND;
+        }
     }
 }
 
@@ -106,9 +376,13 @@ inline void calculate(int N, int T, double G, double TIME_DELTA, Body *n_bodies)
 
     Force n_bodies_forces[N];
     for (int z = 0; z < T; ++z) {
+        Cell* octree = generate_octtree(N, n_bodies);
+        // cout << "tree generated " << octree << endl;
+        compute_cell_properties(octree, n_bodies);
         for (int i = 0; i < N; ++i) {
-            compute_force(i, N, G, n_bodies, &(n_bodies_forces[i]));
+            compute_force(i, N, G, n_bodies, &(n_bodies_forces[i]), octree);
         }
+        // cout << "force computed" << endl;
         for (int i = 0; i < N; ++i) {
             update_body(&(n_bodies_next[i]), N, G, TIME_DELTA, n_bodies[i], n_bodies_forces[i]);
         }
@@ -116,6 +390,7 @@ inline void calculate(int N, int T, double G, double TIME_DELTA, Body *n_bodies)
         for (int i = 0; i < N; i++) {
             n_bodies[i] = n_bodies_next[i];
         }
+        delete_octtree(octree);
     }
 }
 
@@ -160,5 +435,5 @@ int main(int argc, char **argv) {
     return 0;
 }
 
-// g++ -std=c++14 -O3 -o n2_sequential n2_sequential.cpp
-// ./n2_sequential < ../body_10.data
+// g++ -std=c++14 -O3 -o nlogn_sequential nlogn_sequential.cpp
+// ./nlogn_sequential < ../body_10.data

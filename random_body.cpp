@@ -1,5 +1,5 @@
 /*
- * genrate random 2D body
+ * genrate random 3D body
  * Author: Xulin Yang, 904904 
  */
 
@@ -12,6 +12,8 @@ using namespace std;
 constexpr double X_BOUND = 1.0e6;      // Width of space
 constexpr double Y_BOUND = 1.0e6;      // Height of space
 constexpr double Z_BOUND = 1.0e6;      // Depth of space
+
+constexpr double MAX_MASS = 1.0e30;    // Mass of the sun
 
 double rand_double( double low, double high ) {
     return ( ( double )rand() * ( high - low ) ) / ( double )RAND_MAX + low;
@@ -38,10 +40,10 @@ int main(int argc, char **argv){
     double mass, px, py, pz, vx, vy, vz;
 
     for (int i = 0; i < N; i++) {
-        mass = rand_double(0.0, 1.0);
-        px   = rand_double(0.0, 1.0);
-        py   = rand_double(0.0, 1.0);
-        pz   = rand_double(0.0, 1.0);
+        mass = rand_double(0.0, 1.0) * MAX_MASS;
+        px   = rand_double(0.0, 1.0) * X_BOUND;
+        py   = rand_double(0.0, 1.0) * Y_BOUND;
+        pz   = rand_double(0.0, 1.0) * Z_BOUND;
         vx   = rand_double(0.0, 1.0);
         vy   = rand_double(0.0, 1.0);
         vz   = rand_double(0.0, 1.0); 

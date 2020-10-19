@@ -87,14 +87,27 @@ inline void update_body(Body * body_next, int N, double G, double TIME_DELTA, Bo
     body_next->vy += factor * body_force.fy;
     body_next->vz += factor * body_force.fz;
 
-    // Check if particles attempt to cross boundary
-    // if so, by the law of conservation of momentum, reverse the velocity
-    if ((body_next->px >= X_BOUND) || (body_next->px <= 0)) {
-        body_next->vx *= -1;
-    } else if ((body_next->py >= Y_BOUND) || (body_next->py <= 0)) {
-        body_next->vy *= -1;
-    } else if ((body_next->pz >= Z_BOUND) || (body_next->pz <= 0)) {
-        body_next->vz *= -1;
+    // wrap the position if out of bound
+    if (body_next->px >= X_BOUND) {
+        body_next->px = fmod(body_next->px, X_BOUND);
+    } else if (body_next->px <= 0) {
+        while (body_next->px < 0) {
+            body_next->px += X_BOUND;
+        }
+    }
+    if (body_next->py >= Y_BOUND) {
+        body_next->py = fmod(body_next->py, Y_BOUND);
+    } else if (body_next->py <= 0) {
+        while (body_next->py < 0) {
+            body_next->py += Y_BOUND;
+        }
+    }
+    if (body_next->pz >= Z_BOUND) {
+        body_next->pz = fmod(body_next->pz, Z_BOUND);
+    } else if (body_next->pz <= 0) {
+        while (body_next->pz < 0) {
+            body_next->pz += Z_BOUND;
+        }
     }
 }
 
