@@ -27,7 +27,7 @@ constexpr double EPSILON = 0.000001;
 constexpr double X_BOUND = 1.0e6;      // Width of space
 constexpr double Y_BOUND = 1.0e6;      // Height of space
 constexpr double Z_BOUND = 1.0e6;      // Depth of space
-constexpr double THETA   = 1.0;        // Opening angle, for approximation in Barned hut algorithm
+constexpr double THETA   = 0;        // Opening angle, for approximation in Barned hut algorithm
 
 // Body related calculation
 struct Body {
@@ -271,44 +271,46 @@ inline double compute_distance(Body body_i, Body body_j) {
     pz_diff = body_j.pz - body_i.pz;
 
     // ||p_j - p_i||
-    return sqrt(pow(px_diff, 2) + pow(py_diff, 2) + pow(pz_diff, 2));  // add epsilon to avoid zero division
+    return sqrt(pow(px_diff, 2) + pow(py_diff, 2) + pow(pz_diff, 2));
 }
 
 /* Computes the force experienced between a particle and a cell */
-void compute_force_from_cell(Cell* cell, int index, Body * n_bodies, double G, Force * force) {
-    double d = compute_distance(n_bodies[index], cell->center);
+void compute_force_from_cell(Cell* cell, int i, Body * n_bodies, double G, Force * force) {
+    double px_diff, py_diff, pz_diff, factor, euclidean_distance;
+    // distance in x direction
+    px_diff = (cell->center).px - n_bodies[i].px;
+    // distance in y direction
+    py_diff = (cell->center).py - n_bodies[i].py;
+    // distance in z direction
+    pz_diff = (cell->center).pz - n_bodies[i].pz;
 
-    // Compute grativational force according to Newtonian's law
-    double f = (G * (n_bodies[index].mass * n_bodies[cell->index].mass) / (pow(d, 3)));
+    // ||p_j - p_i||
+    euclidean_distance = sqrt(pow(px_diff, 2) + pow(py_diff, 2) + pow(pz_diff, 2));
 
-    // Resolve forces in each direction
-    force->fx += f * ((n_bodies[cell->index].px - n_bodies[index].px));
-    force->fy += f * ((n_bodies[cell->index].py - n_bodies[index].py));
-    force->fz += f * ((n_bodies[cell->index].pz - n_bodies[index].pz));      
+    // G * m_i * m_j / (||p_j - p_i||)^3
+    factor = G * (cell->center).mass * n_bodies[i].mass / (pow(euclidean_distance, 3) + EPSILON); // + epsilon to avoid zero division
+    // f_ij = factor * (p_j - p_i)
+    force->fx += px_diff * factor; // force in x direction
+    force->fy += py_diff * factor; // force in y direction
+    force->fz += pz_diff * factor; // force in z direction 
 }
 
 /* Computes the force between the particles in the system, 
  * using the clustering-approximation for long distant forces
  */
 void compute_force_from_octtree(Cell* cell, int index, Body * n_bodies, double G, Force * force) {
-    // cout << "compute_force_from_octtree " << cell->n_children << endl;
     if (cell->n_children == 0) {
-        // cout << "compute_force_from_octtree if" << endl;
         if (cell->index != -1 && cell->index != index) {
-            // cout << "computing force" << endl;
             compute_force_from_cell(cell, index, n_bodies, G, force);
         }
     } else {
-        // cout << "compute_force_from_octtree else" << endl;
         double d = compute_distance(n_bodies[index], cell->center);
         
         if (THETA > (cell->width / d)){ 
             // Use approximation
-            // cout << "computing force" << endl;
             compute_force_from_cell(cell, index, n_bodies, G, force);         
         } else {
             for (int i = 0; i < cell->n_children; ++i) {
-                // cout << "computing force" << endl;
                 compute_force_from_octtree(cell->children[i], index, n_bodies, G, force);
             }
         }      

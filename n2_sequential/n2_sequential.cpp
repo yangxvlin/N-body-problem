@@ -54,14 +54,14 @@ inline void compute_force(int i, int N, double G, Body *n_bodies, Force * force)
     for (int j = 0; j < N; j++) {
         if (i != j) {
             // distance in x direction
-            px_diff = n_bodies[j].px - n_bodies->px;
+            px_diff = n_bodies[j].px - n_bodies[i].px;
             // distance in y direction
-            py_diff = n_bodies[j].py - n_bodies->py;
+            py_diff = n_bodies[j].py - n_bodies[i].py;
             // distance in z direction
-            pz_diff = n_bodies[j].pz - n_bodies->pz;
+            pz_diff = n_bodies[j].pz - n_bodies[i].pz;
 
             // ||p_j - p_i||
-            euclidean_distance = sqrt(pow(px_diff, 2) + pow(py_diff, 2) + pow(pz_diff, 2));  // add epsilon to avoid zero division
+            euclidean_distance = sqrt(pow(px_diff, 2) + pow(py_diff, 2) + pow(pz_diff, 2));
 
             // G * m_i * m_j / (||p_j - p_i||)^3
             factor = G * n_bodies[j].mass * n_bodies[i].mass / (pow(euclidean_distance, 3) + EPSILON); // + epsilon to avoid zero division
