@@ -89,25 +89,19 @@ inline void update_body(Body * body_next, int N, double G, double TIME_DELTA, Bo
 
     // wrap the position if out of bound
     if (body_next->px >= X_BOUND) {
-        body_next->px = fmod(body_next->px, X_BOUND);
+        body_next->vx = -1 * abs(body_next->vx);
     } else if (body_next->px <= 0) {
-        while (body_next->px < 0) {
-            body_next->px += X_BOUND;
-        }
+        body_next->vx = abs(body_next->vx);
     }
     if (body_next->py >= Y_BOUND) {
-        body_next->py = fmod(body_next->py, Y_BOUND);
+        body_next->vy = -1 * abs(body_next->vy);
     } else if (body_next->py <= 0) {
-        while (body_next->py < 0) {
-            body_next->py += Y_BOUND;
-        }
+        body_next->vy = abs(body_next->vy);
     }
     if (body_next->pz >= Z_BOUND) {
-        body_next->pz = fmod(body_next->pz, Z_BOUND);
+        body_next->vz = -1 * abs(body_next->vz);
     } else if (body_next->pz <= 0) {
-        while (body_next->pz < 0) {
-            body_next->pz += Z_BOUND;
-        }
+        body_next->vz = -1 * abs(body_next->vz);
     }
 }
 
