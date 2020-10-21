@@ -77,7 +77,7 @@ individual* GA() {
 int main() {
 	srand(time(0));
 	chessBoardSize=8;
-	maxSolutions=92;
+	maxSolutions=20;
 	map<string, int> solutions;
 	int numFound=0;
 	while(numFound!=maxSolutions) {
@@ -107,4 +107,4 @@ int main() {
 }
 
 // g++ genetic_nqueen_sequential.cpp -o nqueen -O3
-// ./nqueen
+// time ./nqueen

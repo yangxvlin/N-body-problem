@@ -131,7 +131,7 @@ int main(int argc, char** argv) {
         int maxSolutions;
         int initialPopulationCount = 10;
 
-        maxSolutions=92;
+        maxSolutions=10;
         map<string, int> solutions;
         int numFound=0;
 
@@ -144,7 +144,7 @@ int main(int argc, char** argv) {
                 tempWay += ostr.str();
             }
 
-            // fitValue(tempWay, position_ij, all_positions);
+            // fitValue(tempWay, position_ij, all_positions, chessBoardSize, rank, size);
             // break;
 
             individual *temp;
@@ -162,33 +162,37 @@ int main(int argc, char** argv) {
                 cout<<"Possible Solution #"<<(++numFound)<<":\t"<<solution->way<<endl;
             }
 
-            cout << "master finished" << endl;
-            char str_buffer[chessBoardSize];
-            str_buffer[0] = '#';
-            MPI_Bcast(str_buffer, chessBoardSize, MPI_CHAR, root, comm);
-
-            cout << "time = " << GetTimeStamp() - start << endl;
         }
+        cout << "master finished" << endl;
+        char str_buffer[chessBoardSize];
+        str_buffer[0] = '#';
+        MPI_Bcast(str_buffer, chessBoardSize, MPI_CHAR, root, comm);
+
+        cout << "time = " << GetTimeStamp() - start << endl;
     } else {
-        char way[chessBoardSize];
+        char way[chessBoardSize+1];
 
         while (true) {
             MPI_Bcast(way, chessBoardSize, MPI_CHAR, root, comm);
+            way[chessBoardSize] = '\0';
+            // cout << "rank[" << rank << "] " << "str received: " << way[0] << way[1] << way[2] << way[3] << way[4] << endl;
+
             if (way[0] == '#') {
-                cout << "stop" << endl;
+                // cout << "stop" << endl;
                 break;
             }
 
             int sum2 = 0;
 
             for (int z = 0; z < tasks_per_rank; ++z) {
-            int index = rank * tasks_per_rank + z;		
+            int index = (rank-1) * tasks_per_rank + z;
 			
                 if (index < all_positions) {
                     pair<int, int> ij = position_ij.at(index);
                     
                     int i = ij.first;
                     int j = ij.second;
+                    // cout << "rank[" << rank << "] " << index << "(" << i << " " << j << ")" << endl;
                     
                     if((way[i] == way[j]) || (i-way[i] == j-way[j]) || (i+way[i] == j+way[j])) {
                         sum2 += 1;
@@ -196,6 +200,7 @@ int main(int argc, char** argv) {
                 }
             }
 
+            // cout << "rank[" << rank << "] sum2: " << sum2 << endl;
             MPI_Send(&sum2, 1, MPI_INT, root, 0, comm);
         }
 
@@ -206,4 +211,5 @@ int main(int argc, char** argv) {
 }
 
 // mpicxx genetic_nqueen_mpi.cpp -o nqueen -O3
-// mpirun -np 4 nqueen
+// mpirun -np 2 nqueen
+// time mpirun -np 4 nqueen > 8queen.out
