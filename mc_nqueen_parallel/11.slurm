@@ -16,18 +16,18 @@ module load openmpi/3.1.4
 export OMP_NUM_THREADS=$SLURM_CPUS_PER_TASK
 
 mpicxx -O3 -fopenmp mc_nqueen_parallel.cpp -o nqueen
-mpirun nqueen < ../nqueen_8_90.data > nqueen_8_90_1.out
-mpirun nqueen < ../nqueen_50_90.data > nqueen_50_90_1.out
-mpirun nqueen < ../nqueen_100_90.data > nqueen_100_90_1.out
-mpirun nqueen < ../nqueen_8_90.data > nqueen_8_90_2.out
-mpirun nqueen < ../nqueen_50_90.data > nqueen_50_90_2.out
-mpirun nqueen < ../nqueen_100_90.data > nqueen_100_90_2.out
-mpirun nqueen < ../nqueen_8_90.data > nqueen_8_90_3.out
-mpirun nqueen < ../nqueen_50_90.data > nqueen_50_90_3.out
-mpirun nqueen < ../nqueen_100_90.data > nqueen_100_90_3.out
-mpirun nqueen < ../nqueen_8_90.data > nqueen_8_90_4.out
-mpirun nqueen < ../nqueen_50_90.data > nqueen_50_90_4.out
-mpirun nqueen < ../nqueen_100_90.data > nqueen_100_90_4.out
-mpirun nqueen < ../nqueen_8_90.data > nqueen_8_90_5.out
-mpirun nqueen < ../nqueen_50_90.data > nqueen_50_90_5.out
-mpirun nqueen < ../nqueen_100_90.data > nqueen_100_90_5.out
+mpirun nqueen < ../nqueen_11_90.data > nqueen_11_8_90_1.out
+mpirun nqueen < ../nqueen_11_90.data > nqueen_11_50_90_1.out
+mpirun nqueen < ../nqueen_11_90.data > nqueen_11_100_90_1.out
+mpirun nqueen < ../nqueen_11_90.data > nqueen_11_8_90_2.out
+mpirun nqueen < ../nqueen_11_90.data > nqueen_11_50_90_2.out
+mpirun nqueen < ../nqueen_11_90.data > nqueen_11_100_90_2.out
+mpirun nqueen < ../nqueen_11_90.data > nqueen_11_8_90_3.out
+mpirun nqueen < ../nqueen_11_90.data > nqueen_11_50_90_3.out
+mpirun nqueen < ../nqueen_11_90.data > nqueen_11_100_90_3.out
+mpirun nqueen < ../nqueen_11_90.data > nqueen_11_8_90_4.out
+mpirun nqueen < ../nqueen_11_90.data > nqueen_11_50_90_4.out
+mpirun nqueen < ../nqueen_11_90.data > nqueen_11_100_90_4.out
+mpirun nqueen < ../nqueen_11_90.data > nqueen_11_8_90_5.out
+mpirun nqueen < ../nqueen_11_90.data > nqueen_11_50_90_5.out
+mpirun nqueen < ../nqueen_11_90.data > nqueen_11_100_90_5.out

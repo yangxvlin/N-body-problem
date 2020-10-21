@@ -44,8 +44,8 @@ def generate_slurm2(dierectory: str, nodes: list, file_format: str, datas: list,
             print("", file=f)
             print("mpicxx -O3 -fopenmp mc_nqueen_parallel.cpp -o nqueen", file=f)
             for i in range(1, multiple_run+1):
-                for n, k in datas:
-                    print("mpirun nqueen < ../nqueen_{}_{}.data > nqueen_{}_{}_{}.out".format(n, k, n, k, i), file=f)
+                for nqueen, k in datas:
+                    print("mpirun nqueen < ../nqueen_{}_{}.data > nqueen_{}_{}_{}_{}.out".format(n, k, n, nqueen, k, i), file=f)
             
 
 if __name__ == "__main__":
