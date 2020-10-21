@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH --time=0:20:00
+#SBATCH --time=0:50:00
 # nodes=min-max
 #SBATCH --nodes=7
 #SBATCH --mem=32G
