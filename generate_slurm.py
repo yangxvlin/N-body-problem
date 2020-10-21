@@ -26,7 +26,7 @@ def generate_slurm2(dierectory: str, nodes: list, file_format: str, datas: list,
     for n in nodes:
         with open("./" + dierectory + "/" + file_format.format(n) + ".slurm", "w") as f:
             print("#!/bin/bash", file=f)
-            print("#SBATCH --time=0:20:00", file=f)
+            print("#SBATCH --time=0:50:00", file=f)
             print("# nodes=min-max", file=f)
             print("#SBATCH --nodes={}".format(n), file=f)
             print("#SBATCH --mem=32G", file=f)
