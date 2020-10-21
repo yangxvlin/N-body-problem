@@ -16,4 +16,6 @@ module load openmpi/3.1.4
 export OMP_NUM_THREADS=$SLURM_CPUS_PER_TASK
 
 mpicxx -O3 -fopenmp mc_nqueen_parallel.cpp -o nqueen
-mpirun nqueen < test1.data > 6.out
+mpirun nqueen < ../nqueen_8_90.data > nqueen_8_90.out
+mpirun nqueen < ../nqueen_50_90.data > nqueen_50_90.out
+mpirun nqueen < ../nqueen_100_90.data > nqueen_100_90.out

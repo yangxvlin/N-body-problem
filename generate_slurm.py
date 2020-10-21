@@ -22,7 +22,7 @@ def generate_slurm(dierectory: str, nodes: list, file_format: str, bodies: list)
             for i in bodies:
                 print("mpirun {} < ../body_{}.data > {}-1-{}.out".format(dierectory, i, n, i), file=f)
 
-def generate_slurm2(dierectory: str, nodes: list, file_format: str):
+def generate_slurm2(dierectory: str, nodes: list, file_format: str, datas: list):
     for n in nodes:
         with open("./" + dierectory + "/" + file_format.format(n) + ".slurm", "w") as f:
             print("#!/bin/bash", file=f)
@@ -43,9 +43,11 @@ def generate_slurm2(dierectory: str, nodes: list, file_format: str):
             print("export OMP_NUM_THREADS=$SLURM_CPUS_PER_TASK", file=f)
             print("", file=f)
             print("mpicxx -O3 -fopenmp mc_nqueen_parallel.cpp -o nqueen", file=f)
-            print("mpirun nqueen < test1.data > {}.out".format(n), file=f)
+            for n, k in datas:
+                print("mpirun nqueen < ../nqueen_{}_{}.data > nqueen_{}_{}.out".format(n, k, n, k), file=f)
             
 
 if __name__ == "__main__":
     # generate_slurm("n2_openmpi", [i for i in range(2, 13)], "{}-1", [10, 1000, 10000])
-    generate_slurm2("mc_nqueen_parallel", [i for i in range(2, 13)], "{}")
+    datas = [(8, 90), (50, 90), (100, 90)]
+    generate_slurm2("mc_nqueen_parallel", [i for i in range(2, 13)], "{}", datas)
