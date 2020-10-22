@@ -33,3 +33,5 @@
 
 .dist/
 .vscode/
+
+./backup/
