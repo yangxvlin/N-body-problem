@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH --time=0:10:00
+#SBATCH --time=0:15:00
 # nodes=min-max
 #SBATCH --nodes=12
 #SBATCH --mem=32G
@@ -17,5 +17,6 @@ export OMP_NUM_THREADS=$SLURM_CPUS_PER_TASK
 
 mpicxx -std=c++14 -O3 -o n2_openmpi n2_openmpi.cpp
 mpirun n2_openmpi < ../body_10.data > 12-1-10.out
+mpirun n2_openmpi < ../body_100.data > 12-1-100.out
 mpirun n2_openmpi < ../body_1000.data > 12-1-1000.out
 mpirun n2_openmpi < ../body_10000.data > 12-1-10000.out

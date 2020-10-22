@@ -28,9 +28,6 @@ uint64_t GetTimeStamp() {
 }
 
 constexpr double EPSILON = 0.000001;
-constexpr double X_BOUND = 1.0e6;      // Width of space
-constexpr double Y_BOUND = 1.0e6;      // Height of space
-constexpr double Z_BOUND = 1.0e6;      // Depth of space
 
 // Body related calculation
 struct Body {
@@ -103,15 +100,6 @@ inline void update_body(Body * body_next, int N, double G, double TIME_DELTA, Bo
     body_next->vy += factor * body_force.fy;
     body_next->vz += factor * body_force.fz;
 
-    // Check if particles attempt to cross boundary
-    // if so, by the law of conservation of momentum, reverse the velocity
-    if ((body_next->px >= X_BOUND) || (body_next->px <= 0)) {
-        body_next->vx *= -1;
-    } else if ((body_next->py >= Y_BOUND) || (body_next->py <= 0)) {
-        body_next->vy *= -1;
-    } else if ((body_next->pz >= Z_BOUND) || (body_next->pz <= 0)) {
-        body_next->vz *= -1;
-    }
 }
 
 inline void calculate(int N, int T, double G, double TIME_DELTA, Body *n_bodies) {
