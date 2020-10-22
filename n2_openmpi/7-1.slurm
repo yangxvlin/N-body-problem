@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH --time=0:30:00
+#SBATCH --time=0:40:00
 # nodes=min-max
 #SBATCH --nodes=7
 #SBATCH --mem=32G
@@ -19,4 +19,5 @@ mpicxx -std=c++14 -O3 -o n2_openmpi n2_openmpi.cpp
 mpirun n2_openmpi < ../body_10.data > 7-1-10.out
 mpirun n2_openmpi < ../body_100.data > 7-1-100.out
 mpirun n2_openmpi < ../body_1000.data > 7-1-1000.out
-mpirun n2_openmpi < ../body_10000.data > 7-1-10000.out
+mpirun n2_openmpi < ../body_2000.data > 7-1-2000.out
+mpirun n2_openmpi < ../body_5000.data > 7-1-5000.out
