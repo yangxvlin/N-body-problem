@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH --time=0:15:00
+#SBATCH --time=0:45:00
 # nodes=min-max
 #SBATCH --nodes=5
 #SBATCH --mem=32G
@@ -16,6 +16,18 @@ module load openmpi/3.1.4
 export OMP_NUM_THREADS=$SLURM_CPUS_PER_TASK
 
 mpicxx -O3 -fopenmp mc_nqueen_parallel.cpp -o nqueen
-mpirun nqueen < ../nqueen_8_90.data > nqueen_5_8_90.out
-mpirun nqueen < ../nqueen_50_90.data > nqueen_5_50_90.out
-mpirun nqueen < ../nqueen_100_90.data > nqueen_5_100_90.out
+mpirun nqueen < ../nqueen_8_90.data > nqueen_5_8_90_1.out
+mpirun nqueen < ../nqueen_50_90.data > nqueen_5_50_90_1.out
+mpirun nqueen < ../nqueen_100_90.data > nqueen_5_100_90_1.out
+mpirun nqueen < ../nqueen_8_90.data > nqueen_5_8_90_2.out
+mpirun nqueen < ../nqueen_50_90.data > nqueen_5_50_90_2.out
+mpirun nqueen < ../nqueen_100_90.data > nqueen_5_100_90_2.out
+mpirun nqueen < ../nqueen_8_90.data > nqueen_5_8_90_3.out
+mpirun nqueen < ../nqueen_50_90.data > nqueen_5_50_90_3.out
+mpirun nqueen < ../nqueen_100_90.data > nqueen_5_100_90_3.out
+mpirun nqueen < ../nqueen_8_90.data > nqueen_5_8_90_4.out
+mpirun nqueen < ../nqueen_50_90.data > nqueen_5_50_90_4.out
+mpirun nqueen < ../nqueen_100_90.data > nqueen_5_100_90_4.out
+mpirun nqueen < ../nqueen_8_90.data > nqueen_5_8_90_5.out
+mpirun nqueen < ../nqueen_50_90.data > nqueen_5_50_90_5.out
+mpirun nqueen < ../nqueen_100_90.data > nqueen_5_100_90_5.out
