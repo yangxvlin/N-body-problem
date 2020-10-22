@@ -21,3 +21,4 @@ mpirun nlogn_openmpi < ../body_100.data > 12-1-100.out
 mpirun nlogn_openmpi < ../body_500.data > 12-1-500.out
 mpirun nlogn_openmpi < ../body_1000.data > 12-1-1000.out
 mpirun nlogn_openmpi < ../body_2000.data > 12-1-2000.out
+mpirun nlogn_openmpi < ../body_5000.data > 12-1-5000.out
