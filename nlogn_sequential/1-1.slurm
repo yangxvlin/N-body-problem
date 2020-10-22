@@ -18,6 +18,6 @@ export OMP_NUM_THREADS=$SLURM_CPUS_PER_TASK
 mpicxx -std=c++14 -O3 -o nlogn_sequential nlogn_sequential.cpp
 mpirun nlogn_sequential < ../body_10.data > 1-1-10.out
 mpirun nlogn_sequential < ../body_100.data > 1-1-100.out
+mpirun nlogn_sequential < ../body_500.data > 1-1-500.out
 mpirun nlogn_sequential < ../body_1000.data > 1-1-1000.out
 mpirun nlogn_sequential < ../body_2000.data > 1-1-2000.out
-mpirun nlogn_sequential < ../body_5000.data > 1-1-5000.out
