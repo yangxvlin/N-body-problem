@@ -57,5 +57,5 @@ int main(int argc, char **argv){
 // ./random_body 10 > body_10.data
 // ./random_body 100 > body_100.data
 // ./random_body 1000 > body_1000.data
-// ./random_body 10000 > body_10000.data
-// ./random_body 100000 > body_100000.data
+// ./random_body 2000 > body_2000.data
+// ./random_body 5000 > body_5000.data

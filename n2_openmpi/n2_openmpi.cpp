@@ -103,7 +103,6 @@ inline void update_body(Body * body_next, int N, double G, double TIME_DELTA, Bo
 }
 
 inline void calculate(int N, int T, double G, double TIME_DELTA, Body *n_bodies) {
-    MPI_Bcast(&N, 1, MPI_INT, root, comm);
     MPI_Bcast(&T, 1, MPI_INT, root, comm);
     MPI_Bcast(&G, 1, MPI_DOUBLE, root, comm);
     MPI_Bcast(&TIME_DELTA, 1, MPI_DOUBLE, root, comm);
@@ -203,7 +202,7 @@ int main(int argc, char **argv) {
         cin >> G;
         cin >> TIME_DELTA;
     }
-
+    MPI_Bcast(&N, 1, MPI_INT, root, comm);
     Body n_bodies[N];
     if (rank == root) {
         for (int i = 0; i < N; ++i) {

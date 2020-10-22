@@ -73,9 +73,10 @@ def generate_slurm3(dierectory: str, nodes: list, file_format: str, datas: list)
                 print("mpirun nqueen < ../nqueen_{}_{}.data > nqueen_{}_{}_{}.out".format(nqueen, k, n, nqueen, k), file=f)
 
 if __name__ == "__main__":
-    generate_slurm("n2_sequential", [1], "{}-1", [10, 100, 1000, 10000], minutes=30)
-    generate_slurm("nlogn_sequential", [1], "{}-1", [10, 100, 1000, 10000])
-    generate_slurm("n2_openmpi", [i for i in range(2, 13)], "{}-1", [10, 100, 1000, 10000])
+    generate_slurm("n2_sequential", [1], "{}-1", [10, 100, 1000, 2000, 5000], minutes=40)
+    generate_slurm("n2_openmpi", [i for i in range(2, 13)], "{}-1", [10, 100, 1000, 2000, 5000], minutes=40)
+    generate_slurm("nlogn_sequential", [1], "{}-1", [10, 100, 1000, 2000, 5000], minutes=40)
+    generate_slurm("nlogn_openmpi", [i for i in range(2, 13)], "{}-1", [10, 100, 1000, 2000, 5000], minutes=40)
     # datas = [(8, 90), (50, 90), (100, 90)]
     # generate_slurm2("mc_nqueen_parallel", [i for i in range(2, 13)], "{}", datas, 5)
     # generate_slurm3("mc_nqueen_parallel", [i for i in range(2, 13)], "{}", datas)
