@@ -34,4 +34,4 @@
 .dist/
 .vscode/
 
-./backup/
+backup/
