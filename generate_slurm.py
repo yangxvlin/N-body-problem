@@ -95,7 +95,7 @@ def generate_slurm4(dierectory: str, nodes: list, cores: list, file_format: str,
                 print("", file=f)
                 print("mpicxx -std=c++14 -fopenmp -O3 -o {} {}.cpp".format(dierectory, dierectory), file=f)
                 for i in bodies:
-                    print("mpirun {} < ../body_{}.data > {}-1-{}.out".format(dierectory, i, n, i), file=f)
+                    print("mpirun {} < ../body_{}.data > {}-{}-{}.out".format(dierectory, i, n, core, i), file=f)
 
 if __name__ == "__main__":
     generate_slurm("n2_sequential", [1], "{}-1", [10, 100, 500, 1000, 2000], minutes=15)
