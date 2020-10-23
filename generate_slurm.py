@@ -93,7 +93,7 @@ def generate_slurm4(dierectory: str, nodes: list, cores: list, file_format: str,
                 print("", file=f)
                 print("export OMP_NUM_THREADS=$SLURM_CPUS_PER_TASK", file=f)
                 print("", file=f)
-                print("mpicxx -std=c++14 -O3 -o {} {}.cpp".format(dierectory, dierectory), file=f)
+                print("mpicxx -std=c++14 -fopenmp -O3 -o {} {}.cpp".format(dierectory, dierectory), file=f)
                 for i in bodies:
                     print("mpirun {} < ../body_{}.data > {}-1-{}.out".format(dierectory, i, n, i), file=f)
 
