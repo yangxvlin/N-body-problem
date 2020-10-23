@@ -421,7 +421,7 @@ inline void calculate(int N, int T, double G, double TIME_DELTA, Body *n_bodies)
         for (int i = n_start; i < n_end; ++i) {
             tmp_n_bodies[i - n_start] = n_nodies_padded[i];
         }
-        cout << "rank[" << rank << "] " << z << endl;
+        // cout << "rank[" << rank << "] " << z << endl;
         #pragma omp parallel for
         for (int i = n_start; i < n_end; ++i) {
             compute_force(i, N, G, n_nodies_padded, &(tmp_forces[i - n_start]), octree);
