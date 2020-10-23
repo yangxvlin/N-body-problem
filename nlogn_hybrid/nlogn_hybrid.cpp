@@ -397,7 +397,7 @@ inline void calculate(int N, int T, double G, double TIME_DELTA, Body *n_bodies)
 
     for (int z = 0; z < T; ++z) {
         double local_x_bound = 0.0, local_y_bound = 0.0, local_z_bound = 0.0;
-        
+        #pragma omp parallel for reduction(max:local_x_bound, local_y_bound, local_z_bound)        
         for (int i = n_start; i < n_end; ++i) {
             if (n_nodies_padded[i].px > local_x_bound) {
                 local_x_bound = n_nodies_padded[i].px;
