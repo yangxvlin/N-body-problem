@@ -1,0 +1,15 @@
+n2_hybrid.cpp: In function ‘void calculate(int, int, double, double, Body*)’:
+n2_hybrid.cpp:135:5: error: ‘nt’ was not declared in this scope
+     nt n_threads = omp_get_max_threads();
+     ^~
+n2_hybrid.cpp:135:5: note: suggested alternative: ‘int’
+     nt n_threads = omp_get_max_threads();
+     ^~
+     int
+n2_hybrid.cpp:137:25: error: ‘n_threads’ was not declared in this scope
+     omp_set_num_threads(n_threads);
+                         ^~~~~~~~~
+n2_hybrid.cpp:137:25: note: suggested alternative: ‘pthread_t’
+     omp_set_num_threads(n_threads);
+                         ^~~~~~~~~
+                         pthread_t
