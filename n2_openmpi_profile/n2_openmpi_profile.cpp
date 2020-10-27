@@ -188,8 +188,8 @@ inline void calculate(int N, int T, double G, double TIME_DELTA, Body *n_bodies,
 
     if (rank == root) {
         cout << "comm_time = " << comm_time << endl;
-        cout << "cal_force_time = " << compute_force_time + comm_time << endl;
-        cout << "body_update_time = " << update_time + compute_force_time + comm_time << endl;
+        cout << "cal_force_time = " << compute_force_time << endl;
+        cout << "body_update_time = " << update_time << endl;
     }
 
     if (rank == root) {

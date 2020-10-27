@@ -453,10 +453,10 @@ inline void calculate(int N, int T, double G, double TIME_DELTA, Body *n_bodies,
 
     if (rank == root) {
         cout << "comm_time = " << comm_time << endl;
-        cout << "tree_construction = " << tree_construct + comm_time << endl;
-        cout << "cal_force_time = " << compute_force_time + tree_construct + comm_time << endl;
-        cout << "body_update_time = " << update_time + compute_force_time + tree_construct + comm_time << endl;
-        cout << "tree_distruction = " << tree_distruction + update_time + compute_force_time + tree_construct + comm_time << endl;
+        cout << "tree_construction = " << tree_construct << endl;
+        cout << "cal_force_time = " << compute_force_time << endl;
+        cout << "body_update_time = " << update_time << endl;
+        cout << "tree_distruction = " << tree_distruction << endl;
     }
 
     if (rank == root) {

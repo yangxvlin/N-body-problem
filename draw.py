@@ -172,15 +172,22 @@ def get_profile(parallel_directory: str,
                 nodes: list,
                 body: int,
                 hasTree=False):
-    profile = [[] for _ in range(len(bodies))]
+    if hasTree:
+        n_input = 6
+    else:
+        n_input = 4
+    
+    profile = [[] for _ in range(n_input)]
 
-    for i, n in enumerate(nodes):
+    for n in nodes:
         with open(parallel_directory + "{}-1-{}".format(n, body) + ".out") as f:
-            tmp = int(f.readline().split(' = ')[1])
-            profile[i].append(para_time)
-            if hasTree:
+
+            for j in range(0, n_input):
                 tmp = int(f.readline().split(' = ')[1])
-                profile[i].append(para_time)
+                profile[j].append(tmp)
+    
+    print(profile)
+    return profile
 
 def draw(xs, yss, title, xlabel, ylabel, legend):
     plt.figure()
@@ -189,10 +196,36 @@ def draw(xs, yss, title, xlabel, ylabel, legend):
     plt.legend(legend)
     plt.xlabel(xlabel)
     plt.ylabel(ylabel)
+    plt.yscale('log')
     plt.title(title)
     plt.savefig(title)
 
 if __name__ == "__main__":
+    n2_profile = get_profile("n2_openmpi_profile/",
+                             [i for i in range(2, 13)],
+                             2000,
+                             False
+                            )
+    draw([i for i in range(2, 13)],
+         n2_profile,
+         "parallel O(n^2) Runtime profile",
+         "nodes",
+         "Runtime (ms)",
+         ["communication", "force calculation", "body update", "other"]
+    )
+    nlogn_profile = get_profile("nlogn_openmpi_profile/",
+                             [i for i in range(2, 13)],
+                             2000,
+                             True
+                            )
+    draw([i for i in range(2, 13)],
+         nlogn_profile,
+         "parallel O(n logn) Runtime profile",
+         "nodes",
+         "Runtime (ms)",
+         ["communication", "tree construct", "force calculation", "body update", "tree delete", "other"]
+    )
+
     # n2_seq, n2_para, n2_speedup = get_speedup("n2_sequential/",
     #             "n2_openmpi/",
     #             [i for i in range(2, 13)],
