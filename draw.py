@@ -168,6 +168,20 @@ def get_speedup2(sequential_directory: str,
     print(speedup)
     return sequential_time, parallel_time, speedup
 
+def get_profile(parallel_directory: str, 
+                nodes: list,
+                body: int,
+                hasTree=False):
+    profile = [[] for _ in range(len(bodies))]
+
+    for i, n in enumerate(nodes):
+        with open(parallel_directory + "{}-1-{}".format(n, body) + ".out") as f:
+            tmp = int(f.readline().split(' = ')[1])
+            profile[i].append(para_time)
+            if hasTree:
+                tmp = int(f.readline().split(' = ')[1])
+                profile[i].append(para_time)
+
 def draw(xs, yss, title, xlabel, ylabel, legend):
     plt.figure()
     for ys in yss:
@@ -179,126 +193,106 @@ def draw(xs, yss, title, xlabel, ylabel, legend):
     plt.savefig(title)
 
 if __name__ == "__main__":
-    n2_seq, n2_para, n2_speedup = get_speedup("n2_sequential/",
-                "n2_openmpi/",
-                [i for i in range(2, 13)],
-                [10, 100, 500, 1000, 2000]
-                )
-    nlogn_seq, nlogn_para, nlogn_speedup = get_speedup("nlogn_sequential/",
-                "nlogn_openmpi/",
-                [i for i in range(2, 13)],
-                [10, 100, 500, 1000, 2000]
-                )
-    draw([i for i in range(2, 13)],
-         n2_speedup,
-         "O(n^2) speedup",
-         "nodes",
-         "speedup",
-         list(map(lambda x: "{}-body".format(x), [10, 100, 500, 1000, 2000]))
-    )
-    draw([i for i in range(2, 13)],
-         nlogn_speedup,
-         "O(n logn) speedup",
-         "nodes",
-         "speedup",
-         list(map(lambda x: "{}-body".format(x), [10, 100, 500, 1000, 2000]))
-    )
-    draw([i for i in range(2, 13)],
-         n2_para,
-         "O(n^2) Runtime",
-         "nodes",
-         "Runtime (ms)",
-         list(map(lambda x: "{}-body".format(x), [10, 100, 500, 1000, 2000]))
-    )
-    draw([i for i in range(2, 13)],
-         nlogn_para,
-         "O(n logn) Runtime",
-         "nodes",
-         "Runtime (ms)",
-         list(map(lambda x: "{}-body".format(x), [10, 100, 500, 1000, 2000]))
-    )
-    n2_seq, n2_para, n2_speedup = get_speedup2("n2_openmpi/",
-            "n2_hybrid/",
-            5,
-            5,
-            [500, 1000, 2000],
-            [i for i in range(2, 17)],
-            )
-    draw([i for i in range(2, 17)],
-        n2_speedup,
-        "O(n^2) speedup openmpi+openmp 5 nodes",
-        "threads",
-        "speedup",
-        list(map(lambda x: "{}-body".format(x), [500, 1000, 2000]))
-    )
-    n2_seq, n2_para, n2_speedup = get_speedup2("nlogn_openmpi/",
-            "nlogn_hybrid/",
-            5,
-            5,
-            [500, 1000, 2000],
-            [i for i in range(2, 17)],
-            )
-    draw([i for i in range(2, 17)],
-        n2_speedup,
-        "O(n logn) speedup openmpi+openmp 5 nodes",
-        "threads",
-        "speedup",
-        list(map(lambda x: "{}-body".format(x), [500, 1000, 2000]))
-    )
-    n2_seq, n2_para, n2_speedup = get_speedup2("n2_sequential/",
-            "n2_hybrid/",
-            1,
-            5,
-            [500, 1000, 2000],
-            [i for i in range(2, 17)],
-            )
-    draw([i for i in range(2, 17)],
-        n2_speedup,
-        "O(n^2) speedup openmpi+openmp 5 nodes vs sequential",
-        "threads",
-        "speedup",
-        list(map(lambda x: "{}-body".format(x), [500, 1000, 2000]))
-    )
-    n2_seq, n2_para, n2_speedup = get_speedup2("nlogn_sequential/",
-            "nlogn_hybrid/",
-            1,
-            5,
-            [500, 1000, 2000],
-            [i for i in range(2, 17)],
-            )
-    draw([i for i in range(2, 17)],
-        n2_speedup,
-        "O(n logn) speedup openmpi+openmp 5 nodes vs sequential",
-        "threads",
-        "speedup",
-        list(map(lambda x: "{}-body".format(x), [500, 1000, 2000]))
-    )
+    # n2_seq, n2_para, n2_speedup = get_speedup("n2_sequential/",
+    #             "n2_openmpi/",
+    #             [i for i in range(2, 13)],
+    #             [10, 100, 500, 1000, 2000]
+    #             )
+    # nlogn_seq, nlogn_para, nlogn_speedup = get_speedup("nlogn_sequential/",
+    #             "nlogn_openmpi/",
+    #             [i for i in range(2, 13)],
+    #             [10, 100, 500, 1000, 2000]
+    #             )
+    # draw([i for i in range(2, 13)],
+    #      n2_speedup,
+    #      "O(n^2) speedup",
+    #      "nodes",
+    #      "speedup",
+    #      list(map(lambda x: "{}-body".format(x), [10, 100, 500, 1000, 2000]))
+    # )
+    # draw([i for i in range(2, 13)],
+    #      nlogn_speedup,
+    #      "O(n logn) speedup",
+    #      "nodes",
+    #      "speedup",
+    #      list(map(lambda x: "{}-body".format(x), [10, 100, 500, 1000, 2000]))
+    # )
+    # draw([i for i in range(2, 13)],
+    #      n2_para,
+    #      "O(n^2) Runtime",
+    #      "nodes",
+    #      "Runtime (ms)",
+    #      list(map(lambda x: "{}-body".format(x), [10, 100, 500, 1000, 2000]))
+    # )
+    # draw([i for i in range(2, 13)],
+    #      nlogn_para,
+    #      "O(n logn) Runtime",
+    #      "nodes",
+    #      "Runtime (ms)",
+    #      list(map(lambda x: "{}-body".format(x), [10, 100, 500, 1000, 2000]))
+    # )
+    # n2_seq, n2_para, n2_speedup = get_speedup2("n2_openmpi/",
+    #         "n2_hybrid/",
+    #         5,
+    #         5,
+    #         [500, 1000, 2000],
+    #         [i for i in range(2, 17)],
+    #         )
+    # draw([i for i in range(2, 17)],
+    #     n2_speedup,
+    #     "O(n^2) speedup openmpi+openmp 5 nodes",
+    #     "threads",
+    #     "speedup",
+    #     list(map(lambda x: "{}-body".format(x), [500, 1000, 2000]))
+    # )
+    # n2_seq, n2_para, n2_speedup = get_speedup2("nlogn_openmpi/",
+    #         "nlogn_hybrid/",
+    #         5,
+    #         5,
+    #         [500, 1000, 2000],
+    #         [i for i in range(2, 17)],
+    #         )
+    # draw([i for i in range(2, 17)],
+    #     n2_speedup,
+    #     "O(n logn) speedup openmpi+openmp 5 nodes",
+    #     "threads",
+    #     "speedup",
+    #     list(map(lambda x: "{}-body".format(x), [500, 1000, 2000]))
+    # )
+    # n2_seq, n2_para, n2_speedup = get_speedup2("n2_sequential/",
+    #         "n2_hybrid/",
+    #         1,
+    #         5,
+    #         [500, 1000, 2000],
+    #         [i for i in range(2, 17)],
+    #         )
+    # draw([i for i in range(2, 17)],
+    #     n2_speedup,
+    #     "O(n^2) speedup openmpi+openmp 5 nodes vs sequential",
+    #     "threads",
+    #     "speedup",
+    #     list(map(lambda x: "{}-body".format(x), [500, 1000, 2000]))
+    # )
+    # n2_seq, n2_para, n2_speedup = get_speedup2("nlogn_sequential/",
+    #         "nlogn_hybrid/",
+    #         1,
+    #         5,
+    #         [500, 1000, 2000],
+    #         [i for i in range(2, 17)],
+    #         )
+    # draw([i for i in range(2, 17)],
+    #     n2_speedup,
+    #     "O(n logn) speedup openmpi+openmp 5 nodes vs sequential",
+    #     "threads",
+    #     "speedup",
+    #     list(map(lambda x: "{}-body".format(x), [500, 1000, 2000]))
+    # )
 
-    draw_speedup("./n2_sequential/1node-1-cpt-1-npn-snowy.out",
-                 "./n2_openmpi/",
-                 "node-1-cpt-1-npn-snowy.out",
-                 [i for i in range(2, 13)],
-                 title="Speed of MPI O(n^2)",
-                 xlabel="n nodes",
-                 ylabel="speedup"
-    )
-    
-    draw_nqueen_speedp("./mc_nqueen/",
-                "./mc_nqueen_parallel/",
-                [8, 50, 100],
-                [90],
-                [i for i in range(2, 13)],
-                title="Speedup of Minimum conflicts n-queens",
-                xlabel="n nodes",
-                ylabel="speedup"
-    )
-
-    draw_nqueen_time("./mc_nqueen/",
-                "./mc_nqueen_parallel/",
-                [8, 50, 100],
-                [90],
-                [i for i in range(2, 13)],
-                title="Wall time of Minimum conflicts n-queens",
-                xlabel="n nodes",
-                ylabel="Wall time (ms)"
-    )
+    # draw_speedup("./n2_sequential/1node-1-cpt-1-npn-snowy.out",
+    #              "./n2_openmpi/",
+    #              "node-1-cpt-1-npn-snowy.out",
+    #              [i for i in range(2, 13)],
+    #              title="Speed of MPI O(n^2)",
+    #              xlabel="n nodes",
+    #              ylabel="speedup"
+    # )

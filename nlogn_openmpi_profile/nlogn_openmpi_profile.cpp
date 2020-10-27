@@ -414,7 +414,7 @@ inline void calculate(int N, int T, double G, double TIME_DELTA, Body *n_bodies,
         MPI_Allreduce(&local_x_bound, &global_x_bound, 1, MPI_DOUBLE, MPI_MAX, comm);
         MPI_Allreduce(&local_y_bound, &global_y_bound, 1, MPI_DOUBLE, MPI_MAX, comm);
         MPI_Allreduce(&local_z_bound, &global_z_bound, 1, MPI_DOUBLE, MPI_MAX, comm);
-        compute_force_time += GetTimeStamp() - tmp1;
+        comm_time += GetTimeStamp() - tmp1;
 
         tmp1 = GetTimeStamp();
         Cell* octree = generate_octtree(N, n_nodies_padded, global_x_bound, global_y_bound, global_z_bound);
@@ -435,7 +435,7 @@ inline void calculate(int N, int T, double G, double TIME_DELTA, Body *n_bodies,
         MPI_Allgather(tmp_forces,      n_per_rank, MPI_Force,
                       n_bodies_forces, n_per_rank, MPI_Force,
                       comm);
-        compute_force_time += GetTimeStamp() - tmp1;
+        comm_time += GetTimeStamp() - tmp1;
         tmp1 = GetTimeStamp();
         for (int i = n_start; i < n_end; ++i) {
             update_body(&(tmp_n_bodies[i - n_start]), N, G, TIME_DELTA, n_nodies_padded[i], n_bodies_forces[i]);
@@ -445,7 +445,7 @@ inline void calculate(int N, int T, double G, double TIME_DELTA, Body *n_bodies,
         MPI_Allgather(tmp_n_bodies,    n_per_rank, MPI_Body,
                       n_nodies_padded, n_per_rank, MPI_Body,
                       comm);
-        compute_force_time += GetTimeStamp() - tmp1;
+        comm_time += GetTimeStamp() - tmp1;
         tmp1 = GetTimeStamp();
         delete_octtree(octree);
         tree_distruction += GetTimeStamp() - tmp1;
