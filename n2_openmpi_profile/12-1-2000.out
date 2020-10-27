@@ -1,7 +1,7 @@
-comm_time = 2229495
-cal_force_time = 43011105
-body_update_time = 43015569
-time = 43032007
+comm_time = 2115370
+cal_force_time = 40852803
+body_update_time = 4446
+time = 42998865
 2000
 0: body[2.3308e+12][4.62113e+12][4.71224e+12] velocity: (45673, 9676.26, 16587.7) mass: 8.40188e+29
 1: body[1.6416e+12][3.27e+12][2.81886e+12] velocity: (31617.4, 18269.7, 25710) mass: 7.6823e+29
