@@ -1,9 +1,9 @@
-comm_time = 610782
-tree_construction = 1547233
-cal_force_time = 7397449
-body_update_time = 7403348
-tree_distruction = 7786627
-time = 7794552
+comm_time = 759184
+tree_construction = 942882
+cal_force_time = 5864036
+body_update_time = 6201
+tree_distruction = 383994
+time = 7964561
 2000
 0: body[2.3308e+12][4.62113e+12][4.71224e+12] velocity: (45674.7, 9668.4, 16577.2) mass: 8.40188e+29
 1: body[1.6416e+12][3.27e+12][2.81886e+12] velocity: (31619.2, 18273.4, 25715.2) mass: 7.6823e+29
