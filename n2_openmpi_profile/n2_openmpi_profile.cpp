@@ -251,5 +251,5 @@ int main(int argc, char **argv) {
     return 0;
 }
 
-// mpicxx -std=c++14 -O3 -o n2_openmpi n2_openmpi.cpp
-// mpirun -np 4 n2_openmpi < ../body_10.data
+// mpicxx -std=c++14 -O3 -o n2_openmpi_profile n2_openmpi_profile.cpp
+// mpirun -np 4 n2_openmpi_profile < ../body_10.data
