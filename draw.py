@@ -173,9 +173,9 @@ def get_profile(parallel_directory: str,
                 body: int,
                 hasTree=False):
     if hasTree:
-        n_input = 6
+        n_input = 5
     else:
-        n_input = 4
+        n_input = 3
     
     profile = [[] for _ in range(n_input)]
 
@@ -196,7 +196,7 @@ def draw(xs, yss, title, xlabel, ylabel, legend):
     plt.legend(legend)
     plt.xlabel(xlabel)
     plt.ylabel(ylabel)
-    plt.yscale('log')
+    # plt.yscale('log')
     plt.title(title)
     plt.savefig(title)
 

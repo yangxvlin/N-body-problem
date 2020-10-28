@@ -105,8 +105,8 @@ if __name__ == "__main__":
     generate_slurm("nlogn_openmpi", [i for i in range(2, 13)], "{}-1", [10, 100, 500, 1000, 2000, 5000], minutes=15)
     generate_slurm("nlogn_openmpi_profile", [i for i in range(2, 13)], "{}-1", [2000], minutes=15)
 
-    generate_slurm4("nlogn_hybrid", [5], [i for i in range(2, 41)], "{}-{}", [500, 1000, 2000, 5000], minutes=30)
-    generate_slurm4("n2_hybrid", [5], [i for i in range(2, 41)], "{}-{}", [500, 1000, 2000, 5000], minutes=30)
+    generate_slurm4("nlogn_hybrid", [12], [i for i in range(2, 17)], "{}-{}", [500, 1000, 2000], minutes=15)
+    generate_slurm4("n2_hybrid", [12], [i for i in range(2, 17)], "{}-{}", [500, 1000, 2000], minutes=15)
     # datas = [(8, 90), (50, 90), (100, 90)]
     # generate_slurm2("mc_nqueen_parallel", [i for i in range(2, 13)], "{}", datas, 5)
     # generate_slurm3("mc_nqueen_parallel", [i for i in range(2, 13)], "{}", datas)

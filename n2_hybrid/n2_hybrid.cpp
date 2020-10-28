@@ -132,7 +132,7 @@ inline void calculate(int N, int T, double G, double TIME_DELTA, Body *n_bodies)
         }
     }
 
-    nt n_threads = omp_get_max_threads();
+    int n_threads = omp_get_max_threads();
     // cout << "rank[" << rank << "] " << n_threads << endl;
     omp_set_num_threads(n_threads);
     // if (rank == root) {
