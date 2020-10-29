@@ -123,15 +123,15 @@ def generate_slurm5(dierectory: str, node: int, cores: list, file_format: str, b
                 print("mpirun {} < ../body_{}.data > {}-{}-{}.out".format(dierectory, i, node, core, i), file=f)
 
 if __name__ == "__main__":
-    # generate_slurm("n2_sequential", [1], "{}-1", [10, 100, 500, 1000, 2000], minutes=15)
-    # generate_slurm("n2_openmpi", [i for i in range(2, 13)], "{}-1", [10, 100, 500, 1000, 2000], minutes=15)
-    # generate_slurm("n2_openmpi_profile", [i for i in range(2, 13)], "{}-1", [2000], minutes=15)
-    # generate_slurm("nlogn_sequential", [1], "{}-1", [10, 100, 500, 1000, 2000, 5000], minutes=15)
-    # generate_slurm("nlogn_openmpi", [i for i in range(2, 13)], "{}-1", [10, 100, 500, 1000, 2000, 5000], minutes=15)
-    # generate_slurm("nlogn_openmpi_profile", [i for i in range(2, 13)], "{}-1", [2000], minutes=15)
+    generate_slurm("n2_sequential", [1], "{}-1", [10, 100, 500, 1000, 2000], minutes=15)
+    generate_slurm("n2_openmpi", [i for i in range(2, 13)], "{}-1", [10, 100, 500, 1000, 2000], minutes=15)
+    generate_slurm("n2_openmpi_profile", [i for i in range(2, 13)], "{}-1", [2000], minutes=15)
+    generate_slurm("nlogn_sequential", [1], "{}-1", [10, 100, 500, 1000, 2000, 5000], minutes=15)
+    generate_slurm("nlogn_openmpi", [i for i in range(2, 13)], "{}-1", [10, 100, 500, 1000, 2000, 5000], minutes=15)
+    generate_slurm("nlogn_openmpi_profile", [i for i in range(2, 13)], "{}-1", [2000], minutes=15)
 
-    # generate_slurm4("nlogn_hybrid", [12], [i for i in range(2, 17)], "{}-{}", [500, 1000, 2000], minutes=15)
-    # generate_slurm4("n2_hybrid", [12], [i for i in range(2, 17)], "{}-{}", [500, 1000, 2000], minutes=15)
+    generate_slurm4("nlogn_hybrid", [12], [i for i in range(2, 17)], "{}-{}", [500, 1000, 2000], minutes=15)
+    generate_slurm4("n2_hybrid", [12], [i for i in range(2, 17)], "{}-{}", [500, 1000, 2000], minutes=15)
     
     generate_slurm5("n2_hybrid_profile", 12, [i for i in range(2, 17)], "{}-{}", [2000], minutes=15)
     generate_slurm5("nlogn_hybrid_profile", 12, [i for i in range(2, 17)], "{}-{}", [2000], minutes=15)
