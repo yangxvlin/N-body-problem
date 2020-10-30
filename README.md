@@ -19,13 +19,13 @@ COMP90025 - Parallel and Multicore Computing - 2020S2 - Assignment3
 |``` n2_hybrid/ ```|proposed hybrid O(n^2) algorithm
 |``` n2_hybrid_profile/ ```|proposed hybrid O(n^2) algorithm's runtime profile
 |``` n2_openmpi/ ```|parallel O(n^2) by pure OpenMPI
-|``` n2_openmpi_profile/ ```|parallel O(n^2) by pure OpenMPI runtime protile
+|``` n2_openmpi_profile/ ```|parallel O(n^2) by pure OpenMPI runtime profile
 |``` n2_sequential/ ```|O(n^2) sequential
 |||
 |``` nlogn_hybrid/ ```|proposed hybrid O(n logn) algorithm
 |``` nlogn_hybrid_profile/ ```|proposed hybrid O(n logn) algorithm's runtime profile
 |``` nlogn_openmpi/ ```|parallel O(n logn) by pure OpenMPI
-|``` nlogn_openmpi_profile/ ```|parallel O(n logn) by pure OpenMPI runtime protile
+|``` nlogn_openmpi_profile/ ```|parallel O(n logn) by pure OpenMPI runtime profile
 |``` nlogn_sequential/ ```|O(n logn) sequential
 
 ## How to run
