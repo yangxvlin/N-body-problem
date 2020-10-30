@@ -3,8 +3,8 @@ COMP90025 - Parallel and Multicore Computing - 2020S2 - Assignment3
 
 ## To markers
 - report: ``` docs/COMP90025_Assignment_03.pdf ```
-- proposed hybrid naive approach: ``` n2_hybrid/n2_hybrid.cpp ```
-- proposed hybrid Barnes-Hut algorithm: ``` nlogn_hybrid/nlogn_hybrid.cpp ```
+- proposed hybrid naive O(n^2) approach: ``` n2_hybrid/n2_hybrid.cpp ```
+- proposed hybrid Barnes-Hut O(n logn) algorithm: ``` nlogn_hybrid/nlogn_hybrid.cpp ```
 
 ## directories
 |Content|Description|
