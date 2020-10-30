@@ -136,31 +136,34 @@ inline void calculate(int N, int T, double G, double TIME_DELTA, Body *n_bodies)
 
     MPI_Bcast(n_nodies_padded, N, MPI_Body, root, comm);
 
+    // foreach time step
     for (int z = 0; z < T; ++z) {
+        // copy state to be updated
         #pragma omp parallel for
         for (int i = n_start; i < n_end; ++i) {
             tmp_n_bodies[i - n_start] = n_nodies_padded[i];
         }
 
+        // compute total forces
         #pragma omp parallel for
         for (int i = n_start; i < n_end; ++i) {
             compute_force(i, N, G, n_nodies_padded, &(tmp_forces[i - n_start]));
         }
-
         MPI_Allgather(tmp_forces,      n_per_rank, MPI_Force,
                       n_bodies_forces, n_per_rank, MPI_Force,
                       comm);
 
+        // update bodies
         #pragma omp parallel for
         for (int i = n_start; i < n_end; ++i) {
             update_body(&(tmp_n_bodies[i - n_start]), N, G, TIME_DELTA, n_nodies_padded[i], n_bodies_forces[i]);
         }
-
         MPI_Allgather(tmp_n_bodies,    n_per_rank, MPI_Body,
                       n_nodies_padded, n_per_rank, MPI_Body,
                       comm);
     }
 
+    // copy result
     if (rank == root) {
         for (int i = 0; i < N; ++i) {
             n_bodies[i] = n_nodies_padded[i];

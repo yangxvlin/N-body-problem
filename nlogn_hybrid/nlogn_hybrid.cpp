@@ -393,6 +393,7 @@ inline void calculate(int N, int T, double G, double TIME_DELTA, Body *n_bodies)
     int n_threads = omp_get_max_threads();
     omp_set_num_threads(n_threads);
 
+    // foreach time step
     for (int z = 0; z < T; ++z) {
         double local_x_bound = 0.0, local_y_bound = 0.0, local_z_bound = 0.0;
         #pragma omp parallel for reduction(max:local_x_bound, local_y_bound, local_z_bound)        
@@ -415,11 +416,13 @@ inline void calculate(int N, int T, double G, double TIME_DELTA, Body *n_bodies)
         Cell* octree = generate_octtree(N, n_nodies_padded, global_x_bound, global_y_bound, global_z_bound);
         compute_cell_properties(octree, n_nodies_padded);
 
+        // copy state to be updated
         #pragma omp parallel for
         for (int i = n_start; i < n_end; ++i) {
             tmp_n_bodies[i - n_start] = n_nodies_padded[i];
         }
 
+        // compute total forces
         #pragma omp parallel for
         for (int i = n_start; i < n_end; ++i) {
             compute_force(i, N, G, n_nodies_padded, &(tmp_forces[i - n_start]), octree);
@@ -427,6 +430,8 @@ inline void calculate(int N, int T, double G, double TIME_DELTA, Body *n_bodies)
         MPI_Allgather(tmp_forces,      n_per_rank, MPI_Force,
                       n_bodies_forces, n_per_rank, MPI_Force,
                       comm);
+
+        // update bodies
         #pragma omp parallel for
         for (int i = n_start; i < n_end; ++i) {
             update_body(&(tmp_n_bodies[i - n_start]), N, G, TIME_DELTA, n_nodies_padded[i], n_bodies_forces[i]);
@@ -434,9 +439,11 @@ inline void calculate(int N, int T, double G, double TIME_DELTA, Body *n_bodies)
         MPI_Allgather(tmp_n_bodies,    n_per_rank, MPI_Body,
                       n_nodies_padded, n_per_rank, MPI_Body,
                       comm);
+        
         delete_octtree(octree);
     }
 
+    // copy result
     if (rank == root) {
         for (int i = 0; i < N; ++i) {
             n_bodies[i] = n_nodies_padded[i];
