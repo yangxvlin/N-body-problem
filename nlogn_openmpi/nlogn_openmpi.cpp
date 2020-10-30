@@ -1,5 +1,5 @@
 /*
- * O(n^2) openmpi
+ * parallel O(n logn) by pure OpenMPI
  * Author: Xulin Yang, 904904 
  * 
  * A body is in 3D x-y-z coordinates with mass and velocity
@@ -379,7 +379,6 @@ inline void calculate(int N, int T, double G, double TIME_DELTA, Body *n_bodies)
     int workload = n_end - n_start;
     Force tmp_forces[n_per_rank];
     Body  tmp_n_bodies[n_per_rank];
-    // cout << "rank[" << rank << "] workload=" << workload << endl;
     
     Force n_bodies_forces[n_per_rank * size];
     Body  n_nodies_padded[n_per_rank * size];
@@ -475,7 +474,6 @@ int main(int argc, char **argv) {
         }
     }
 
-    // cout << "start0 " << rank << endl;
     start = GetTimeStamp();
     calculate(N, T, G, TIME_DELTA, n_bodies);
     if (rank == root) {

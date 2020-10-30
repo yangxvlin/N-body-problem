@@ -1,5 +1,5 @@
 /*
- * O(n^2) sequential
+ * O(n logn) sequential
  * Author: Xulin Yang, 904904 
  * 
  * A body is in 3D x-y-z coordinates with mass and velocity
@@ -365,13 +365,11 @@ inline void calculate(int N, int T, double G, double TIME_DELTA, Body *n_bodies)
             }
         }
         Cell* octree = generate_octtree(N, n_bodies, x_bound, y_bound, z_bound);
-        // cout << "tree generated " << octree << endl;
         compute_cell_properties(octree, n_bodies);
         
         for (int i = 0; i < N; ++i) {
             compute_force(i, N, G, n_bodies, &(n_bodies_forces[i]), octree);
         }
-        // cout << "force computed" << endl;
         
         for (int i = 0; i < N; ++i) {
             update_body(&(n_bodies_next[i]), N, G, TIME_DELTA, n_bodies[i], n_bodies_forces[i]);
@@ -399,8 +397,6 @@ int main(int argc, char **argv) {
     cin >> T;
     cin >> G;
     cin >> TIME_DELTA;
-    
-    // cout << T << " " << G << " " << TIME_DELTA << endl;
 
     Body n_bodies[N];
     for (int i = 0; i < N; ++i) {

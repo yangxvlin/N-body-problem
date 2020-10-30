@@ -44,7 +44,7 @@ int main(int argc, char **argv){
         px   = rand_double(0.0, 1.0) * X_BOUND;
         py   = rand_double(0.0, 1.0) * Y_BOUND;
         pz   = rand_double(0.0, 1.0) * Z_BOUND;
-        vx   = rand_double(0.0, 1.0) * MAX_SPEED;
+        vx   = rand_double(-1.0, 1.0) * MAX_SPEED;
         vy   = rand_double(0.0, 1.0) * MAX_SPEED;
         vz   = rand_double(0.0, 1.0) * MAX_SPEED; 
         printf("%lf %lf %lf %lf %lf %lf %lf\n", mass, px, py, pz, vx, vy, vz);

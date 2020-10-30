@@ -122,8 +122,6 @@ int main(int argc, char **argv) {
     cin >> T;
     cin >> G;
     cin >> TIME_DELTA;
-    
-    // cout << T << " " << G << " " << TIME_DELTA << endl;
 
     Body n_bodies[N];
     for (int i = 0; i < N; ++i) {

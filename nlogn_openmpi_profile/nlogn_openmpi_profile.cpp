@@ -1,5 +1,5 @@
 /*
- * O(n^2) openmpi
+ * parallel O(n logn) by pure OpenMPI runtime protile
  * Author: Xulin Yang, 904904 
  * 
  * A body is in 3D x-y-z coordinates with mass and velocity
