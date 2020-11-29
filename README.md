@@ -2,9 +2,9 @@
 COMP90025 - Parallel and Multicore Computing - 2020S2 - Assignment3
 
 ## To markers
-- report: ``` docs/COMP90025_Assignment_03.pdf ```
-- proposed hybrid naive O(n^2) approach: ``` n2_hybrid/n2_hybrid.cpp ```
-- proposed hybrid Barnes-Hut O(n logn) algorithm: ``` nlogn_hybrid/nlogn_hybrid.cpp ```
+- report: [``` docs/COMP90025_Assignment_03.pdf ```](docs/COMP90025_Assignment_03.pdf)
+- proposed hybrid naive O(n^2) approach: [``` n2_hybrid/n2_hybrid.cpp ```](n2_hybrid/n2_hybrid.cpp)
+- proposed hybrid Barnes-Hut O(n logn) algorithm: [``` nlogn_hybrid/nlogn_hybrid.cpp ```](nlogn_hybrid/nlogn_hybrid.cpp)
 
 ## directories
 |Content|Description|
@@ -46,3 +46,17 @@ COMP90025 - Parallel and Multicore Computing - 2020S2 - Assignment3
 - ``` squeue --partition snowy ```
 
 ## Marks
+- 16 out of 20 (80%)
+- |criteria|marks|comments
+  |---|---|---|
+  |Problem depth|20/20
+  |Writing style|15/20|Some poor wording here and there.
+  |Analysis|20/30|While what you did was good, it would have been better to study in more detail the reasons for certain behaviour and make stronger hypotheses.
+  |Results|15/20|Generally good but too many graphs
+  |Literature synthesis|10/10
+- <img width="70%" src="docs/results.jpg" />
+
+### feedback
+- <img src="docs/feedback1.jpg" />
+- <img src="docs/feedback2.jpg" />
+- <img src="docs/feedback3.jpg" />
